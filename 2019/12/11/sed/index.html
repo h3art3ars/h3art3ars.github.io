@@ -48,22 +48,22 @@
   };
 </script>
 
-  <meta name="description" content="笔记">
-<meta property="og:type" content="website">
-<meta property="og:title" content="categories">
-<meta property="og:url" content="http:&#x2F;&#x2F;yoursite.com&#x2F;categories&#x2F;index.html">
+  <meta name="description" content="sed命令，可对文件进行插入，添加，删除。替换操作">
+<meta property="og:type" content="article">
+<meta property="og:title" content="sed">
+<meta property="og:url" content="http:&#x2F;&#x2F;yoursite.com&#x2F;2019&#x2F;12&#x2F;11&#x2F;sed&#x2F;index.html">
 <meta property="og:site_name" content="h3art3ars">
-<meta property="og:description" content="笔记">
+<meta property="og:description" content="sed命令，可对文件进行插入，添加，删除。替换操作">
 <meta property="og:locale" content="zh_CN">
-<meta property="article:published_time" content="2019-12-10T01:31:13.000Z">
-<meta property="article:modified_time" content="2019-12-11T06:50:36.639Z">
+<meta property="article:published_time" content="2019-12-11T07:12:47.000Z">
+<meta property="article:modified_time" content="2019-12-11T07:19:39.640Z">
 <meta property="article:author" content="h3art3ars">
-<meta property="article:tag" content="web">
-<meta property="article:tag" content=" ctf">
-<meta property="article:tag" content=" 网络安全">
+<meta property="article:tag" content="linux">
+<meta property="article:tag" content="command">
+<meta property="article:tag" content="文件操作">
 <meta name="twitter:card" content="summary">
 
-<link rel="canonical" href="http://yoursite.com/categories/">
+<link rel="canonical" href="http://yoursite.com/2019/12/11/sed/">
 
 
 <script id="page-configurations">
@@ -71,12 +71,11 @@
   CONFIG.page = {
     sidebar: "",
     isHome: false,
-    isPost: false
+    isPost: true
   };
 </script>
 
-  <title>categories | h3art3ars
-  </title>
+  <title>sed | h3art3ars</title>
   
 
 
@@ -215,52 +214,142 @@
       <div class="main-inner">
         <div class="content-wrap">
           
-  
-  
 
           <div class="content">
             
 
   <div class="posts-expand">
-    
-    
-    
-    <div class="post-block" lang="zh-CN">
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block " lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/12/11/sed/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpg">
+      <meta itemprop="name" content="h3art3ars">
+      <meta itemprop="description" content="笔记">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="h3art3ars">
+    </span>
       <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          sed
+        </h2>
 
-<h2 class="post-title" itemprop="name headline">categories
-</h2>
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
 
-<div class="post-meta">
+              <time title="创建时间：2019-12-11 15:12:47 / 修改时间：15:19:39" itemprop="dateCreated datePublished" datetime="2019-12-11T15:12:47+08:00">2019-12-11</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/tools/" itemprop="url" rel="index">
+                    <span itemprop="name">tools</span>
+                  </a>
+                </span>
+            </span>
+
+          
+            <div class="post-description">sed命令，可对文件进行插入，添加，删除。替换操作</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h1 id="sed命令"><a href="#sed命令" class="headerlink" title="sed命令"></a>sed命令</h1><h3 id="语法"><a href="#语法" class="headerlink" title="语法"></a>语法</h3><p><code>sed [-hnV] [-e (script)][-f (script-file)][file]</code></p>
+<p><strong>参数说明</strong>：</p>
+<ul>
+<li>-e script或–expression=script 以选项中指定的script来处理输入的文本文件。<strong>可使用多个-e参数执行多个动作</strong></li>
+<li>-f&lt;script文件&gt;或–file=&lt;script文件&gt; 以选项中指V定的script文件来处理输入的文本文件。</li>
+<li>-h或–help 显示帮助。</li>
+<li>-n或–quiet或–silent 仅显示script处理后的结果。</li>
+<li>-V或–version 显示版本信息。</li>
+<li>-i 直接替换文件中内容，不用打开</li>
+</ul>
+<p><strong>动作说明</strong>：</p>
+<ul>
+<li>a ：新增， a 的后面可以接字串，而这些字串会在新的一行出现(目前的下一行)～</li>
+<li>c ：取代， c 的后面可以接字串，这些字串可以取代 n1,n2 之间的行！</li>
+<li>d ：删除，因为是删除啊，所以 d 后面通常不接任何咚咚；</li>
+<li>i ：插入， i 的后面可以接字串，而这些字串会在新的一行出现(目前的上一行)；</li>
+<li>p ：打印，亦即将某个选择的数据印出。通常 p 会与参数 sed -n 一起运行～</li>
+<li>s ：取代，可以直接进行取代的工作哩！通常这个 s 的动作可以搭配正规表示法！例如 1,20s/old/new/g </li>
+</ul>
+<h3 id="实例"><a href="#实例" class="headerlink" title="实例"></a>实例</h3><p>1.添加–<strong>a</strong>（行后）</p>
+<pre><code>在第四行添加一行内容为  *newline*
+
+`sed &apos;4a newline&apos;`</code></pre><p>2.取代–<strong>c</strong></p>
+<pre><code>将2-5行内容换成*2-5line*
+
+`sed &apos;2,5c 2-5line&apos;`
+
+2-5行的全部内容换成一个字串2-5line，并不是每行都会单独取代</code></pre><p>3.删除–<strong>d</strong></p>
+<pre><code>删除4到最后一行
+
+`sed &apos;4,$d&apos;`</code></pre><p>4.插入–<strong>i</strong>（行前）</p>
+<pre><code>在第1行插入内容为*firstline*与secline两行
+
+`sed &apos;1i first\`
+
+`secline&apos;`</code></pre><p>5.搜寻</p>
+<pre><code>寻找含有root的行并删除
+
+`sed &apos;/root/d&apos;`</code></pre><p>5.替换–<strong>s</strong></p>
+<pre><code>`sed s/被替换/替换/g`
+
+类似vim一样的用法</code></pre><p><strong>去除空行用vim中<code>：%s/\n//g</code> 不要用sed ，很复杂</strong></p>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/linux/" rel="tag"># linux</a>
+              <a href="/tags/command/" rel="tag"># command</a>
+              <a href="/tags/%E6%96%87%E4%BB%B6%E6%93%8D%E4%BD%9C/" rel="tag"># 文件操作</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2019/12/11/john/" rel="prev" title="john">
+      <i class="fa fa-chevron-left"></i> john
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2019/12/11/netdiscover/" rel="next" title="netdiscover">
+      netdiscover <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
   
 
-</div>
-
-</header>
-
-      
-      
-      
-      <div class="post-body">
-          <div class="category-all-page">
-            <div class="category-all-title">
-              目前共计 4 个分类
-            </div>
-            <div class="category-all">
-              <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/ctf/">ctf</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/tools/">tools</a><span class="category-list-count">6</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E5%AD%A6%E4%B9%A0/">学习</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E6%BC%8F%E6%B4%9E/">漏洞</a><span class="category-list-count">2</span></li></ul>
-            </div>
-          </div>
-        
-      </div>
-      
-      
-      
-    </div>
-    
-
-    
-    
-    
   </div>
 
 
@@ -312,6 +401,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#sed命令"><span class="nav-number">1.</span> <span class="nav-text">sed命令</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#语法"><span class="nav-number">1.0.1.</span> <span class="nav-text">语法</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#实例"><span class="nav-number">1.0.2.</span> <span class="nav-text">实例</span></a></li></ol></li></ol></li></ol></div>
       </div>
       <!--/noindex-->
 

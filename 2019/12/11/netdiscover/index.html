@@ -48,22 +48,22 @@
   };
 </script>
 
-  <meta name="description" content="笔记">
-<meta property="og:type" content="website">
-<meta property="og:title" content="categories">
-<meta property="og:url" content="http:&#x2F;&#x2F;yoursite.com&#x2F;categories&#x2F;index.html">
+  <meta name="description" content="netdiscover用于快速的主动或被动的发现存活主机">
+<meta property="og:type" content="article">
+<meta property="og:title" content="netdiscover">
+<meta property="og:url" content="http:&#x2F;&#x2F;yoursite.com&#x2F;2019&#x2F;12&#x2F;11&#x2F;netdiscover&#x2F;index.html">
 <meta property="og:site_name" content="h3art3ars">
-<meta property="og:description" content="笔记">
+<meta property="og:description" content="netdiscover用于快速的主动或被动的发现存活主机">
 <meta property="og:locale" content="zh_CN">
-<meta property="article:published_time" content="2019-12-10T01:31:13.000Z">
-<meta property="article:modified_time" content="2019-12-11T06:50:36.639Z">
+<meta property="article:published_time" content="2019-12-11T07:24:40.000Z">
+<meta property="article:modified_time" content="2019-12-11T07:26:52.148Z">
 <meta property="article:author" content="h3art3ars">
-<meta property="article:tag" content="web">
-<meta property="article:tag" content=" ctf">
-<meta property="article:tag" content=" 网络安全">
+<meta property="article:tag" content="command">
+<meta property="article:tag" content="kali">
+<meta property="article:tag" content="扫描">
 <meta name="twitter:card" content="summary">
 
-<link rel="canonical" href="http://yoursite.com/categories/">
+<link rel="canonical" href="http://yoursite.com/2019/12/11/netdiscover/">
 
 
 <script id="page-configurations">
@@ -71,12 +71,11 @@
   CONFIG.page = {
     sidebar: "",
     isHome: false,
-    isPost: false
+    isPost: true
   };
 </script>
 
-  <title>categories | h3art3ars
-  </title>
+  <title>netdiscover | h3art3ars</title>
   
 
 
@@ -215,52 +214,132 @@
       <div class="main-inner">
         <div class="content-wrap">
           
-  
-  
 
           <div class="content">
             
 
   <div class="posts-expand">
-    
-    
-    
-    <div class="post-block" lang="zh-CN">
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block " lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/12/11/netdiscover/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpg">
+      <meta itemprop="name" content="h3art3ars">
+      <meta itemprop="description" content="笔记">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="h3art3ars">
+    </span>
       <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          netdiscover
+        </h2>
 
-<h2 class="post-title" itemprop="name headline">categories
-</h2>
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
 
-<div class="post-meta">
+              <time title="创建时间：2019-12-11 15:24:40 / 修改时间：15:26:52" itemprop="dateCreated datePublished" datetime="2019-12-11T15:24:40+08:00">2019-12-11</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/tools/" itemprop="url" rel="index">
+                    <span itemprop="name">tools</span>
+                  </a>
+                </span>
+            </span>
+
+          
+            <div class="post-description">netdiscover用于快速的主动或被动的发现存活主机</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h1 id="netdiscover"><a href="#netdiscover" class="headerlink" title="netdiscover"></a>netdiscover</h1><ul>
+<li><p>快捷使用    </p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span></pre></td><td class="code"><pre><span class="line">netdiscover -r 192.168.1.0&#x2F;24</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">2</span></pre></td><td class="code"><pre><span class="line">netdiscover -p [-r] 被动模式</span></pre></td></tr></table></figure>
+</li>
+<li></li>
+<li><h3 id="简介"><a href="#简介" class="headerlink" title="简介"></a>简介</h3><p>Netdiscover是一个简单的ARP扫描器，可用于扫描网络中的活动主机。它也可以扫描多个子网。它只是在实时显示（ncurse）中产生输出。可以在可进入网络的渗透测试的第一阶段中使用。Netdiscover是一个简单的初始侦查工具，非常方便。 </p>
+</li>
+<li><h3 id="特征："><a href="#特征：" class="headerlink" title="特征："></a>特征：</h3><ol>
+<li>简单的Arp扫描仪</li>
+<li>可在主动和被动模式下工作</li>
+<li>实时显示已识别的主机</li>
+<li>能够扫描多个子网</li>
+<li>定时选项</li>
+</ol>
+</li>
+<li><h3 id="选项："><a href="#选项：" class="headerlink" title="选项："></a>选项：</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span></pre></td><td class="code"><pre><span class="line">-i设备：您的网络设备</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">2</span></pre></td><td class="code"><pre><span class="line">-r范围：扫描给定范围而不是自动扫描。192.168.6.0&#x2F;24,&#x2F;16,&#x2F;8</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">3</span></pre></td><td class="code"><pre><span class="line">-l文件：扫描包含在给定文件中的范围列表</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">4</span></pre></td><td class="code"><pre><span class="line">-p被动模式：不发送任何内容，仅嗅探</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">5</span></pre></td><td class="code"><pre><span class="line">-m文件：扫描已知的MAC和主机名列表</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">6</span></pre></td><td class="code"><pre><span class="line">-F过滤器：自定义pcap过滤器表达式（默认值：“ arp”）</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">7</span></pre></td><td class="code"><pre><span class="line">-s时间：每个arp请求之间的睡眠时间（毫秒）</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">8</span></pre></td><td class="code"><pre><span class="line">-n节点：用于扫描的最后一个IP八位字节（从2到253）</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">9</span></pre></td><td class="code"><pre><span class="line">-c count：发送每个arp请求的次数（对于丢包的网络）</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">10</span></pre></td><td class="code"><pre><span class="line">-f启用快速模式扫描，节省大量时间，建议用于自动</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">11</span></pre></td><td class="code"><pre><span class="line">-d忽略用于自动扫描和快速模式的家庭配置文件</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">12</span></pre></td><td class="code"><pre><span class="line">-S在每个请求之间启用睡眠时间抑制（硬核模式）</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">13</span></pre></td><td class="code"><pre><span class="line">-P打印结果的格式适合于另一个程序进行解析</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">14</span></pre></td><td class="code"><pre><span class="line">-N不打印标题。仅在启用-P时有效。</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">15</span></pre></td><td class="code"><pre><span class="line">-L在可解析输出模式（-P）中，在活动扫描完成后继续侦听</span></pre></td></tr></table></figure>
+
+<p><strong>指定范围</strong></p>
+<p>我们可以使用-r选项扫描特定范围</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span></pre></td><td class="code"><pre><span class="line">语法：netdiscover -r &lt;范围&gt;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">2</span></pre></td><td class="code"><pre><span class="line"></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">3</span></pre></td><td class="code"><pre><span class="line">命令：netdiscover -r 192.168.1.0&#x2F;24</span></pre></td></tr></table></figure>
+
+<p><strong>文件中的多个范围</strong></p>
+<p>我们还可以扫描多个范围。当您的大型网络具有多个子网和网络时，这很有用。为此，我们只需要逐行指定要扫描的所有范围</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span></pre></td><td class="code"><pre><span class="line">语法：netdiscover -l &lt;包含范围的文件&gt;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">2</span></pre></td><td class="code"><pre><span class="line"></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">3</span></pre></td><td class="code"><pre><span class="line">命令：netdiscover -l 范围</span></pre></td></tr></table></figure>
+
+<p>有时最好保持安静。-p选项对此有所帮助，但要以耐心为代价。        </p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span></pre></td><td class="code"><pre><span class="line">语法：netdiscover -p -r &lt;范围，可选&gt;</span></pre></td></tr></table></figure>
+
+<p><strong>输出</strong></p>
+<p>如果要将其通过管道传输到文件，也有一个可分析的输出选项。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span></pre></td><td class="code"><pre><span class="line">语法：netdiscover -P &lt;可分析&gt; -N &lt;省略标题&gt;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">2</span></pre></td><td class="code"><pre><span class="line"></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">3</span></pre></td><td class="code"><pre><span class="line">命令：netdiscover -r 192.168.1.1&#x2F;24 -PN</span></pre></td></tr></table></figure></li>
+</ul>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/command/" rel="tag"># command</a>
+              <a href="/tags/kali/" rel="tag"># kali</a>
+              <a href="/tags/%E6%89%AB%E6%8F%8F/" rel="tag"># 扫描</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2019/12/11/sed/" rel="prev" title="sed">
+      <i class="fa fa-chevron-left"></i> sed
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2019/12/11/phpfuzz/" rel="next" title="phpfuzz">
+      phpfuzz <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
   
 
-</div>
-
-</header>
-
-      
-      
-      
-      <div class="post-body">
-          <div class="category-all-page">
-            <div class="category-all-title">
-              目前共计 4 个分类
-            </div>
-            <div class="category-all">
-              <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/ctf/">ctf</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/tools/">tools</a><span class="category-list-count">6</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E5%AD%A6%E4%B9%A0/">学习</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E6%BC%8F%E6%B4%9E/">漏洞</a><span class="category-list-count">2</span></li></ul>
-            </div>
-          </div>
-        
-      </div>
-      
-      
-      
-    </div>
-    
-
-    
-    
-    
   </div>
 
 
@@ -312,6 +391,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#netdiscover"><span class="nav-number">1.</span> <span class="nav-text">netdiscover</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#简介"><span class="nav-number">1.0.1.</span> <span class="nav-text">简介</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#特征："><span class="nav-number">1.0.2.</span> <span class="nav-text">特征：</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#选项："><span class="nav-number">1.0.3.</span> <span class="nav-text">选项：</span></a></li></ol></li></ol></li></ol></div>
       </div>
       <!--/noindex-->
 
