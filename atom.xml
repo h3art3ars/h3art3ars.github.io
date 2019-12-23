@@ -6,7 +6,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://h3art3ars.github.io/"/>
-  <updated>2019-12-23T04:21:41.980Z</updated>
+  <updated>2019-12-23T04:49:55.348Z</updated>
   <id>http://h3art3ars.github.io/</id>
   
   <author>
@@ -15,6 +15,31 @@
   </author>
   
   <generator uri="https://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>thinkphp Notes</title>
+    <link href="http://h3art3ars.github.io/2019/12/23/thinkphp-Notes/"/>
+    <id>http://h3art3ars.github.io/2019/12/23/thinkphp-Notes/</id>
+    <published>2019-12-23T04:47:06.000Z</published>
+    <updated>2019-12-23T04:49:55.348Z</updated>
+    
+    <content type="html"><![CDATA[<h1 id="thinkphp安装"><a href="#thinkphp安装" class="headerlink" title="thinkphp安装"></a>thinkphp安装</h1><h2 id="安装"><a href="#安装" class="headerlink" title="安装"></a>安装</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span></pre></td><td class="code"><pre><span class="line">composer create-project topthink&#x2F;think tp</span></pre></td></tr></table></figure><p>启动服务</p><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span></pre></td><td class="code"><pre><span class="line">cd tp</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">2</span></pre></td><td class="code"><pre><span class="line">php think run</span></pre></td></tr></table></figure><p>然后就可以在浏览器中访问</p><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span></pre></td><td class="code"><pre><span class="line">http:&#x2F;&#x2F;localhost:8000</span></pre></td></tr></table></figure><p>如果需要更新框架使用</p><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span></pre></td><td class="code"><pre><span class="line">composer update topthink&#x2F;framework</span></pre></td></tr></table></figure><hr><h1 id="thinkphp-cms-特征目录识别"><a href="#thinkphp-cms-特征目录识别" class="headerlink" title="thinkphp cms 特征目录识别"></a>thinkphp cms 特征目录识别</h1><p>thinkphp的文件可能会放在网站根目录，也可能放在/ThinkPHP内或者独自建立/thinkphp文件夹放进去。</p><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span></pre></td><td class="code"><pre><span class="line">http:&#x2F;&#x2F;x.x.x.x&#x2F;index.php?c&#x3D;4e5e5d7364f443e28fbf0d3ae744a59a</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">2</span></pre></td><td class="code"><pre><span class="line">http:&#x2F;&#x2F;x.x.x.x&#x2F;4e5e5d7364f443e28fbf0d3ae744a59a</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">3</span></pre></td><td class="code"><pre><span class="line">http:&#x2F;&#x2F;x.x.x.x&#x2F;LICENSE.txt</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">4</span></pre></td><td class="code"><pre><span class="line">http:&#x2F;&#x2F;x.x.x.x&#x2F;logo.png</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">5</span></pre></td><td class="code"><pre><span class="line">http:&#x2F;&#x2F;x.x.x.x&#x2F;README.md</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">6</span></pre></td><td class="code"><pre><span class="line">http:&#x2F;&#x2F;x.x.x.x&#x2F;composer.json</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">7</span></pre></td><td class="code"><pre><span class="line">http:&#x2F;&#x2F;x.x.x.x&#x2F;Application&#x2F;README.md</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">8</span></pre></td><td class="code"><pre><span class="line">http:&#x2F;&#x2F;x.x.x.x&#x2F;Extend&#x2F;README.txt</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">9</span></pre></td><td class="code"><pre><span class="line">http:&#x2F;&#x2F;x.x.x.x&#x2F;Extend&#x2F;Vendor&#x2F;readme.txt</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">10</span></pre></td><td class="code"><pre><span class="line">http:&#x2F;&#x2F;x.x.x.x&#x2F;ThinkPHP&#x2F;LICENSE.txt</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">11</span></pre></td><td class="code"><pre><span class="line">http:&#x2F;&#x2F;x.x.x.x&#x2F;ThinkPHP&#x2F;logo.png</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">12</span></pre></td><td class="code"><pre><span class="line">http:&#x2F;&#x2F;x.x.x.x&#x2F;ThinkPHP&#x2F;composer.json</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">13</span></pre></td><td class="code"><pre><span class="line">http:&#x2F;&#x2F;x.x.x.x&#x2F;ThinkPHP&#x2F;Application&#x2F;README.md</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">14</span></pre></td><td class="code"><pre><span class="line">http:&#x2F;&#x2F;x.x.x.x&#x2F;ThinkPHP&#x2F;Extend&#x2F;README.txt</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">15</span></pre></td><td class="code"><pre><span class="line">http:&#x2F;&#x2F;x.x.x.x&#x2F;ThinkPHP&#x2F;Extend&#x2F;Vendor&#x2F;readme.txt</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">16</span></pre></td><td class="code"><pre><span class="line">http:&#x2F;&#x2F;x.x.x.x&#x2F;think</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">17</span></pre></td><td class="code"><pre><span class="line">http:&#x2F;&#x2F;x.x.x.x&#x2F;phpunit.xml</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">18</span></pre></td><td class="code"><pre><span class="line">http:&#x2F;&#x2F;x.x.x.x&#x2F;public&#x2F;favicon.ico</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">19</span></pre></td><td class="code"><pre><span class="line">http:&#x2F;&#x2F;x.x.x.x&#x2F;public&#x2F;robots.txt</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">20</span></pre></td><td class="code"><pre><span class="line">http:&#x2F;&#x2F;x.x.x.x&#x2F;thinkphp&#x2F;.travis.yml</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">21</span></pre></td><td class="code"><pre><span class="line">http:&#x2F;&#x2F;x.x.x.x&#x2F;thinkphp&#x2F;codecov.yml</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">22</span></pre></td><td class="code"><pre><span class="line">http:&#x2F;&#x2F;x.x.x.x&#x2F;thinkphp&#x2F;CONTRIBUTING.md</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">23</span></pre></td><td class="code"><pre><span class="line">http:&#x2F;&#x2F;x.x.x.x&#x2F;thinkphp&#x2F;LICENSE.txt</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">24</span></pre></td><td class="code"><pre><span class="line">http:&#x2F;&#x2F;x.x.x.x&#x2F;thinkphp&#x2F;logo.png</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">25</span></pre></td><td class="code"><pre><span class="line">http:&#x2F;&#x2F;x.x.x.x&#x2F;thinkphp&#x2F;composer.json</span></pre></td></tr></table></figure>]]></content>
+    
+    <summary type="html">
+    
+      phpthink杂七杂八笔记
+    
+    </summary>
+    
+    
+      <category term="Notes" scheme="http://h3art3ars.github.io/categories/Notes/"/>
+    
+    
+      <category term="thinkphp" scheme="http://h3art3ars.github.io/tags/thinkphp/"/>
+    
+      <category term="Notes" scheme="http://h3art3ars.github.io/tags/Notes/"/>
+    
+  </entry>
   
   <entry>
     <title>think3.2.3 sql注入</title>
