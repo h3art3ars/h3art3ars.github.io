@@ -4,6 +4,33 @@
   
     
     <entry>
+      <title>一次黑产溯源</title>
+      <link href="/2020/09/06/%E4%B8%80%E6%AC%A1%E9%BB%91%E4%BA%A7%E6%BA%AF%E6%BA%90/"/>
+      <url>/2020/09/06/%E4%B8%80%E6%AC%A1%E9%BB%91%E4%BA%A7%E6%BA%AF%E6%BA%90/</url>
+      
+        <content type="html"><![CDATA[<h1 id="记一次黑产溯源"><a href="#记一次黑产溯源" class="headerlink" title="记一次黑产溯源"></a>记一次黑产溯源</h1><h2 id="起因"><a href="#起因" class="headerlink" title="起因"></a>起因</h2><p>一个黑产仿冒客户的app，进行贷款诈骗，然后给我的任务就是尽可能的收集证据。</p><h2 id="信息收集"><a href="#信息收集" class="headerlink" title="信息收集"></a>信息收集</h2><p>客户给了一个app下载链接。</p><p><code>https://dbfgef.app*****.com/</code></p><p>查了一下ip位置，发现是新浪云服务器。</p><p>然后查看了一下下载页面，是一个仿冒应用宝下载页面。</p><p>仔细分析了一下页面，并且爆破了一下目录。</p><p>发现了 <code>/get.php</code>，发现了两个链接。</p><p><img src="images/image-20200824204053339.png" alt="image-20200824204053339"></p><p>分别为andriod和ios应用。分别存储在其阿里云oss和一个应用分发平台。</p><p><img src="images/image-20200824204217888.png" alt="image-20200824204217888"></p><p>应用分发脱离了平台，暂时放过。</p><p>分析一下app，下载app，进入app。</p><p><img src="images/image-20200824204531686.png" alt="image-20200824204531686"></p><p>发现像是webview，抓了一个包，从web端访问，发现可以访问。之后就从web端开始测试了。</p><p>发现有头像上传，尝试文件上传。上传失败。查看url发现其上传的api是由另一台服务器处理的，于时访问此服务器直接发现了一个上传页面。</p><p><img src="images/image-20200824205053058.png" alt="image-20200824205053058"></p><p>测试了一下，发现其上传后，还是传到阿里云oss，测试了一下，发现上传页面是使用thinkphp框架搭建，但是是5.0.24版本，无法利用。</p><p>继续查看web端，测试报错，发现其使用了thinkphp3.2.3框架开发。尝试访问日志成功。</p><p>在其中发现</p><p><img src="images/image-20200824205613676.png" alt="image-20200824205613676"></p><p>cmd5解出密码账号密码 <code>1:[空格] [空格] [空格] [空格] [空格] [空格]</code></p><p>但是尝试了日志中的路径，均无法访问后台。猜测应该是前后台分离。</p><p>之后尝试了子域名，域名解析ip，以及同一ip下的域名访问，都没有查到相关信息。</p><p>之后再次尝试网站报错</p><p><img src="images/image-20200824205838923.png" alt="image-20200824205838923"></p><p>发现其报错目录的域名，和web访问的域名不同。</p><p>尝试访问此域名。</p><p><img src="images/image-20200824210144929.png" alt="image-20200824210144929"></p><p>是一个ios下载页面，测试了一下，没有什么功能，就提供了一个页面和下载链接。</p><p>之后再次尝试此域名的子域名，相关域名，同ip的域名。多番验证，找到这个页面。</p><p><img src="images/image-20200824210920283.png" alt="image-20200824210920283"></p><p>直觉告诉我这是他们的后台。尝试上面得到的账号密码登录。成功登录。</p><p><img src="images/image-20200824210608479.png" alt="image-20200824210608479"></p><p>看了一下信息，发现有之前在app注册的账号，再次证明为目标后台。之后后台尝试拿shell，未成功。</p><p>至此信息收集结束，打包交给客户。</p><p>然后过了一段时间，发现除了前台和后台，其他的站还好好的。</p><p><img src="images/image-20200824210830301.png" alt="image-20200824210830301"></p><h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>渗透测试的本质还是信息收集，收集的范围，和目标相关联的资产越多，测试下来能发现的漏洞就越多。还有就是违法的事情不能做，不然动了别人的利益，哪里都跑不掉。</p>]]></content>
+      
+      
+      <categories>
+          
+          <category> 信息收集 </category>
+          
+          <category> 溯源 </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> 信息收集 </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
       <title>渗透测试纪实-tp过安全狗</title>
       <link href="/2020/05/22/%E6%B8%97%E9%80%8F%E6%B5%8B%E8%AF%95%E7%BA%AA%E5%AE%9E-tp%E8%BF%87%E5%AE%89%E5%85%A8%E7%8B%97/"/>
       <url>/2020/05/22/%E6%B8%97%E9%80%8F%E6%B5%8B%E8%AF%95%E7%BA%AA%E5%AE%9E-tp%E8%BF%87%E5%AE%89%E5%85%A8%E7%8B%97/</url>
