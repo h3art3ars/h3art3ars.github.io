@@ -30,6 +30,42 @@
       </tags>
   </entry>
   <entry>
+    <title>无服务器搭建威胁情报提醒平台</title>
+    <url>/2022/03/25/%E6%97%A0%E6%9C%8D%E5%8A%A1%E5%99%A8%E6%90%AD%E5%BB%BA%E5%A8%81%E8%83%81%E6%83%85%E6%8A%A5%E6%8F%90%E9%86%92%E5%B9%B3%E5%8F%B0/</url>
+    <content><![CDATA[<h2 id="源码"><a href="#源码" class="headerlink" title="源码"></a>源码</h2><p><a href="https://github.com/h3art3ars/threat-broadcast" target="_blank" rel="noopener">https://github.com/h3art3ars/threat-broadcast</a></p>
+<h2 id="使用"><a href="#使用" class="headerlink" title="使用"></a>使用</h2><p>项目已配置 <a href="https://docs.github.com/cn/actions/configuring-and-managing-workflows/configuring-a-workflow" target="_blank" rel="noopener">Github Actions</a>，因此你只需轻松几步即可实现部署：</p>
+<ul>
+<li><p>Fork 本项目到代码仓库</p>
+</li>
+<li><p>通过个人配置 Settings –&gt;Developer Settings Secrets 配置用于</p>
+<p>发送</p>
+</li>
+</ul>
+<p>  威胁情报邮件的 3 个环境变量：</p>
+<ul>
+<li><code>MAIL_SMTP</code>： SMTP 服务器（国内推荐 QQ），如 <code>smtp.qq.com</code></li>
+<li><code>MAIL_USER</code>： 邮箱账号，如 <code>threatbroadcast@qq.com</code></li>
+<li><code>MAIL_PASS</code>： 邮箱密码/邮箱授权码</li>
+<li><code>GRAPAQL_TOKEN</code>： 用于调用 Github GraphQL 接口加载收件人，可于个人 <code>Settings --&gt;Developer Person access token</code>生成</li>
+</ul>
+<ul>
+<li>启用 Settings –&gt; Actions 功能启用workflow</li>
+</ul>
+<blockquote>
+<p>尔后程序便会每小时执行一次，并自动生成 <a href="https://lyy289065406.github.io/threat-broadcast/" target="_blank" rel="noopener">Github Page</a> 播报页面（若要调整执行频率，可修改 <a href="https://github.com/lyy289065406/threat-broadcast/blob/master/.github/workflows/autorun.yml" target="_blank" rel="noopener"><code>autorun.yml</code></a> 的 <code>schedule</code> 触发时点）</p>
+</blockquote>
+<ul>
+<li><p>更改<code>config，autorun.yml,recv</code>中的配置</p>
+</li>
+<li><p>启用 github pages </p>
+<p>仓库的Setting -&gt;Pages </p>
+<p>分支选择 Master，路径选择doc</p>
+<p>等待部署完成即可使用</p>
+</li>
+</ul>
+]]></content>
+  </entry>
+  <entry>
     <title>Apache HTTP Server漏洞利用</title>
     <url>/2021/11/24/Apache-HTTP-Server%E6%BC%8F%E6%B4%9E%E5%88%A9%E7%94%A8/</url>
     <content><![CDATA[<h2 id="简介"><a href="#简介" class="headerlink" title="简介"></a>简介</h2><p> Apache httpd Server 2.4.49 版本引入了一个具有路径穿越漏洞的新函数，但需要配合穿越的目录配置 Require all granted，攻击者可利用该漏洞实现路径穿越从而读取任意文件，或者在配置了cgi的httpd程序中执行bash指令，从而有机会控制服务器。 </p>
